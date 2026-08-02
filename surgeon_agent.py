@@ -27,6 +27,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 import zipfile
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -151,7 +152,7 @@ def resolve_safe_workspace_path(workspace_root: str, relative_path: str) -> str:
             hint="All files must reside inside the designated project directory.",
         )
 
-    target = os.path.abspath(os.path.join(clean_root, relative_path))
+    target = os.path.abspath(os.path.join(clean_root, norm_rel))
     try:
         common = os.path.commonpath([clean_root, target])
         if common != clean_root:
@@ -1149,7 +1150,7 @@ class AgentWorkspace:
             Summary of written/edited/deleted files, backup ID, and root path.
         """
         written_files: List[str] = []
-        backup_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:18]
+        backup_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{uuid.uuid4().hex[:6]}"
         snap_dir = os.path.join(self.backups_dir, backup_id)
         backed_up_files: List[str] = []
 
