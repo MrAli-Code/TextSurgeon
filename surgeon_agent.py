@@ -16,6 +16,7 @@ Zero third-party dependencies: uses standard library modules only.
 from __future__ import annotations
 
 import difflib
+import hashlib
 import io
 import json
 import os
@@ -23,6 +24,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -2038,13 +2040,48 @@ def export_project_zip(workspace_root: str) -> bytes:
 
 
 # --------------------------------------------------------------------------- #
-# Nexus-Style Smart Key Manager & Multi-Key Rotation
+# Nexus-Adopted Smart Key Manager & Multi-Key Rotation Engine
 # --------------------------------------------------------------------------- #
+
+# Error classification kinds (matching Nexus §4.2)
+QUOTA = "quota"
+BAD_KEY = "bad_key"
+MODEL = "model"
+TRANSIENT = "transient"
+UNKNOWN = "unknown"
+
+RPM_COOLDOWN_SEC: Final[int] = 75
+_DAY_SECONDS: Final[int] = 86400
+
+# Model quota metadata from Nexus registry
+NEXUS_MODEL_CAPACITIES: Final[Dict[str, Dict[str, int]]] = {
+    "gemini-3.1-flash-lite": {"rpm": 15, "rpd": 500},
+    "gemini-3.5-flash-lite": {"rpm": 15, "rpd": 500},
+    "gemini-3.6-flash": {"rpm": 5, "rpd": 20},
+    "gemini-3.5-flash": {"rpm": 5, "rpd": 20},
+    "gemini-3-flash": {"rpm": 5, "rpd": 20},
+    "gemini-2.5-flash": {"rpm": 5, "rpd": 20},
+    "gemini-2.5-flash-lite": {"rpm": 10, "rpd": 20},
+}
+
+
+def _today_utc() -> str:
+    return time.strftime("%Y-%m-%d", time.gmtime())
+
+
+def _next_utc_midnight() -> float:
+    now = time.time()
+    return (int(now // _DAY_SECONDS) + 1) * _DAY_SECONDS
+
+
+def _kid(key: str) -> str:
+    """Non-reversible stable hash id for key telemetry and storage."""
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
 
 
 @dataclass
 class KeyStats:
-    """Telemetry and rate-limit tracking for a single API key."""
+    """Telemetry and rate-limit tracking for a single API key (Nexus-compatible)."""
 
     total_requests: int = 0
     successful_requests: int = 0
@@ -2053,22 +2090,37 @@ class KeyStats:
     cooldown_reason: str = ""
     invalid: bool = False
     invalid_reason: str = ""
+    last_kind: str = "ok"
     model_usage: Dict[str, int] = field(default_factory=dict)
 
 
 class KeyManager:
-    """Manages multi-key rotation, daily quotas, cooldowns, and failover across AI providers."""
+    """Smart multi-key manager adopting the complete Nexus API rotation engine."""
 
-    _stats: Dict[str, Dict[str, KeyStats]] = {}  # {provider: {key: KeyStats}}
+    _stats: Dict[str, Dict[str, KeyStats]] = {}  # {provider: {kid: KeyStats}}
+    _lock = threading.RLock()
+    _day: str = _today_utc()
+
+    @classmethod
+    def _roll_day(cls) -> None:
+        today = _today_utc()
+        if today != cls._day:
+            cls._day = today
+            # Reset daily usage counts
+            for prov in cls._stats.values():
+                for st in prov.values():
+                    st.model_usage.clear()
 
     @classmethod
     def _get_key_stats(cls, provider: str, key: str) -> KeyStats:
         clean_prov = provider.lower().strip()
+        kid = _kid(key)
+        cls._roll_day()
         if clean_prov not in cls._stats:
             cls._stats[clean_prov] = {}
-        if key not in cls._stats[clean_prov]:
-            cls._stats[clean_prov][key] = KeyStats()
-        return cls._stats[clean_prov][key]
+        if kid not in cls._stats[clean_prov]:
+            cls._stats[clean_prov][kid] = KeyStats()
+        return cls._stats[clean_prov][kid]
 
     @classmethod
     def mask_key(cls, key: str) -> str:
@@ -2080,7 +2132,7 @@ class KeyManager:
 
     @classmethod
     def parse_keys(cls, raw: Union[str, List[str], Sequence[str]]) -> List[str]:
-        """Parses comma-separated, semicolon-separated, or list of API keys."""
+        """Parses comma-separated, semicolon-separated, newline, or list of API keys."""
         if isinstance(raw, (list, tuple, set)):
             keys: List[str] = []
             for item in raw:
@@ -2093,10 +2145,98 @@ class KeyManager:
         return tokens
 
     @classmethod
+    def get_cap_for(cls, model: str) -> Optional[int]:
+        """Returns daily cap (RPD) for a model."""
+        clean_m = model.lower().strip()
+        row = NEXUS_MODEL_CAPACITIES.get(clean_m)
+        return row.get("rpd") if row else None
+
+    @classmethod
+    def classify_error(cls, status_code: int, error_body: str) -> str:
+        """Maps HTTP status code / SDK error to Nexus error kinds."""
+        s = f"status {status_code} {error_body}".lower()
+        if any(x in s for x in ("resource_exhausted", "429", "quota", "rate limit", "rate-limit", "exhausted")):
+            return QUOTA
+        if any(x in s for x in ("api_key_invalid", "api key not valid", "invalid api key", "401", "unauthenticated", "permission_denied", "403", "invalid authentication")):
+            return BAD_KEY
+        if any(x in s for x in ("not_found", "not found", "404", "is not supported", "unsupported", "does not exist")):
+            return MODEL
+        if any(x in s for x in ("500", "502", "503", "504", "internal", "unavailable", "deadline", "timeout", "timed out", "connection", "temporarily")):
+            return TRANSIENT
+        return UNKNOWN
+
+    @classmethod
+    def order_keys(cls, provider: str, keys: Sequence[str], model: str = "") -> List[str]:
+        """Orders keys Nexus-style: valid first, not in cooldown, most remaining capacity first."""
+        clean_keys = [k.strip() for k in keys if k and k.strip()]
+        if not clean_keys:
+            return []
+
+        now = time.time()
+        cap = cls.get_cap_for(model)
+
+        with cls._lock:
+            cls._roll_day()
+
+            def rank(k: str) -> Tuple[bool, bool, int]:
+                st = cls._get_key_stats(provider, k)
+                used = st.model_usage.get(model, 0)
+                in_cd = st.cooldown_until > now
+                remaining = (cap - used) if cap else 10_000
+                return (st.invalid, in_cd, -remaining)
+
+            return sorted(clean_keys, key=rank)
+
+    @classmethod
     def get_active_key(cls, keys: Sequence[str], provider: str = "openai") -> Optional[str]:
-        """Returns the current best active key from pool according to health and load."""
+        """Returns best active key from pool according to health and capacity."""
         ordered = cls.order_keys(provider, keys)
         return ordered[0] if ordered else None
+
+    @classmethod
+    def record_success(cls, provider: str, key: str, model: str = "") -> None:
+        """Records successful response on key."""
+        with cls._lock:
+            cls._roll_day()
+            st = cls._get_key_stats(provider, key)
+            st.total_requests += 1
+            st.successful_requests += 1
+            st.last_kind = "ok"
+            if model:
+                st.model_usage[model] = st.model_usage.get(model, 0) + 1
+
+    @classmethod
+    def record_error(
+        cls,
+        provider: str,
+        key: str,
+        model: str,
+        status_code: int,
+        error_body: str,
+        cooldown_sec: int = RPM_COOLDOWN_SEC,
+    ) -> str:
+        """Records error on key, applies appropriate cooldown / invalidation, returns error kind."""
+        with cls._lock:
+            cls._roll_day()
+            st = cls._get_key_stats(provider, key)
+            st.total_requests += 1
+            st.failed_requests += 1
+            kind = cls.classify_error(status_code, error_body)
+            st.last_kind = kind
+
+            if kind == BAD_KEY:
+                st.invalid = True
+                st.invalid_reason = f"HTTP {status_code}: {error_body[:200]}"
+            elif kind == QUOTA:
+                cap = cls.get_cap_for(model)
+                used = st.model_usage.get(model, 0)
+                if cap and used >= cap:
+                    st.cooldown_until = _next_utc_midnight()
+                    st.cooldown_reason = f"Daily cap reached ({used}/{cap}). Cooldown until UTC midnight."
+                else:
+                    st.cooldown_until = time.time() + cooldown_sec
+                    st.cooldown_reason = f"RPM limit exceeded. Cooldown {cooldown_sec}s."
+            return kind
 
     @classmethod
     def record_key_status(
@@ -2105,9 +2245,8 @@ class KeyManager:
         status_code: int,
         provider: str = "openai",
         model: str = "",
-        cooldown_sec: int = 60,
+        cooldown_sec: int = RPM_COOLDOWN_SEC,
     ) -> str:
-        """Records error status code on a key."""
         return cls.record_error(
             provider=provider,
             key=key,
@@ -2116,6 +2255,37 @@ class KeyManager:
             error_body=f"HTTP {status_code}",
             cooldown_sec=cooldown_sec,
         )
+
+    @classmethod
+    def get_status(cls, provider: str, keys: Sequence[str]) -> List[Dict[str, Any]]:
+        """Returns live status of keys for UI monitoring."""
+        res: List[Dict[str, Any]] = []
+        now = time.time()
+        with cls._lock:
+            cls._roll_day()
+            for k in keys:
+                if not k:
+                    continue
+                st = cls._get_key_stats(provider, k)
+                state = "ready"
+                if st.invalid:
+                    state = "invalid"
+                elif st.cooldown_until > now:
+                    state = "cooldown"
+                res.append(
+                    {
+                        "masked": cls.mask_key(k),
+                        "state": state,
+                        "total_requests": st.total_requests,
+                        "successful_requests": st.successful_requests,
+                        "failed_requests": st.failed_requests,
+                        "cooldown_remaining": max(0, int(st.cooldown_until - now)),
+                        "invalid_reason": st.invalid_reason,
+                        "last_kind": st.last_kind,
+                        "model_usage": dict(st.model_usage),
+                    }
+                )
+        return res
 
     @classmethod
     def get_pool_status(cls, keys: Sequence[str], provider: str = "openai") -> Dict[str, Any]:
@@ -2132,104 +2302,6 @@ class KeyManager:
             "keys": status_list,
         }
 
-    @classmethod
-    def classify_error(cls, status_code: int, error_body: str) -> str:
-        """Classifies an HTTP error into 'bad_key', 'cooldown', 'transient', or 'unknown'."""
-        body_lower = error_body.lower()
-        if status_code in (401, 403) or "api key not valid" in body_lower or "permission_denied" in body_lower or "invalid_api_key" in body_lower:
-            return "bad_key"
-        if status_code == 429 or "resource_exhausted" in body_lower or "quota" in body_lower or "rate limit" in body_lower:
-            return "cooldown"
-        if status_code in (500, 502, 503, 504, 524):
-            return "transient"
-        return "unknown"
-
-    @classmethod
-    def order_keys(cls, provider: str, keys: Sequence[str], model: str = "") -> List[str]:
-        """Orders keys: valid & ready keys first (least used), then expiring cooldowns."""
-        clean_keys = [k.strip() for k in keys if k and k.strip()]
-        if not clean_keys:
-            return []
-
-        now = time.time()
-        ready: List[Tuple[int, str]] = []
-        cooldown: List[Tuple[float, str]] = []
-
-        for k in clean_keys:
-            st = cls._get_key_stats(provider, k)
-            if st.invalid:
-                continue
-            if st.cooldown_until > now:
-                cooldown.append((st.cooldown_until, k))
-            else:
-                # Prioritize keys with lowest total requests
-                ready.append((st.total_requests, k))
-
-        ready.sort(key=lambda x: x[0])
-        cooldown.sort(key=lambda x: x[0])
-
-        return [k for _, k in ready] + [k for _, k in cooldown]
-
-    @classmethod
-    def record_success(cls, provider: str, key: str, model: str = "") -> None:
-        """Records successful response on key."""
-        st = cls._get_key_stats(provider, key)
-        st.total_requests += 1
-        st.successful_requests += 1
-        if model:
-            st.model_usage[model] = st.model_usage.get(model, 0) + 1
-
-    @classmethod
-    def record_error(
-        cls,
-        provider: str,
-        key: str,
-        model: str,
-        status_code: int,
-        error_body: str,
-        cooldown_sec: int = 60,
-    ) -> str:
-        """Records error on key and applies cooldown or marks invalid."""
-        st = cls._get_key_stats(provider, key)
-        st.total_requests += 1
-        st.failed_requests += 1
-        kind = cls.classify_error(status_code, error_body)
-        if kind == "bad_key":
-            st.invalid = True
-            st.invalid_reason = f"HTTP {status_code}: {error_body[:200]}"
-        elif kind == "cooldown":
-            st.cooldown_until = time.time() + cooldown_sec
-            st.cooldown_reason = f"HTTP {status_code}: Rate limit / Quota exceeded."
-        return kind
-
-    @classmethod
-    def get_status(cls, provider: str, keys: Sequence[str]) -> List[Dict[str, Any]]:
-        """Returns live status of keys for UI monitoring."""
-        res: List[Dict[str, Any]] = []
-        now = time.time()
-        for k in keys:
-            if not k:
-                continue
-            st = cls._get_key_stats(provider, k)
-            state = "ready"
-            if st.invalid:
-                state = "invalid"
-            elif st.cooldown_until > now:
-                state = "cooldown"
-            res.append(
-                {
-                    "masked": cls.mask_key(k),
-                    "state": state,
-                    "total_requests": st.total_requests,
-                    "successful_requests": st.successful_requests,
-                    "failed_requests": st.failed_requests,
-                    "cooldown_remaining": max(0, int(st.cooldown_until - now)),
-                    "invalid_reason": st.invalid_reason,
-                    "model_usage": st.model_usage,
-                }
-            )
-        return res
-
 
 # --------------------------------------------------------------------------- #
 # Pure Standard-Library LLM Client & Autonomous Auto-Pilot
@@ -2240,8 +2312,8 @@ class KeyManager:
 class LLMConfig:
     """Configuration for LLM API connection."""
 
-    provider: str = "ollama"  # ollama | openai | gemini | anthropic | groq | deepseek | openrouter | custom
-    model: str = "llama3"
+    provider: str = "gemini"  # gemini | openai | groq | deepseek | anthropic | openrouter | ollama | custom
+    model: str = "gemini-3.1-flash-lite"
     api_key: str = ""
     api_keys: List[str] = field(default_factory=list)
     base_url: str = "http://localhost:11434"
@@ -2256,7 +2328,6 @@ class LLMConfig:
             keys.extend(KeyManager.parse_keys(self.api_keys))
         if self.api_key:
             keys.extend(KeyManager.parse_keys(self.api_key))
-        # Deduplicate preserving order
         seen = set()
         deduped = []
         for k in keys:
@@ -2267,7 +2338,24 @@ class LLMConfig:
 
 
 class LLMClient:
-    """Pure Python standard library HTTP client with smart key rotation for LLM providers."""
+    """Nexus-style LLM Client with cached GenAI client reuse, REST fallbacks, and smart rotation."""
+
+    _clients: Dict[str, Any] = {}
+    _client_lock = threading.Lock()
+
+    @classmethod
+    def _get_genai_client(cls, api_key: str) -> Optional[Any]:
+        """Reuses cached genai.Client per key (fixes SDK transport closure bug)."""
+        with cls._client_lock:
+            if api_key in cls._clients:
+                return cls._clients[api_key]
+            try:
+                from google import genai
+                c = genai.Client(api_key=api_key)
+                cls._clients[api_key] = c
+                return c
+            except Exception:
+                return None
 
     @classmethod
     def list_ollama_models(cls, base_url: str = "http://localhost:11434", timeout_sec: int = 4) -> List[str]:
@@ -2290,7 +2378,7 @@ class LLMClient:
         config: LLMConfig,
         system_prompt: Optional[str] = None,
     ) -> str:
-        """Sends a prompt to the configured LLM provider with automatic key rotation and failover."""
+        """Sends a prompt using Nexus multi-key rotation, failover, and model error detection."""
         provider = config.provider.lower().strip()
 
         if provider == "ollama":
@@ -2298,55 +2386,70 @@ class LLMClient:
 
         all_keys = config.get_all_keys()
         if not all_keys:
-            # Attempt without key if custom provider or raise
             if provider == "custom":
                 return cls._call_openai_compatible(prompt, config, system_prompt, key="")
             raise AgentError(
                 f"No API key provided for {provider.title()}.",
-                hint=f"Please provide one or more comma-separated API keys for {provider.title()}.",
+                hint=f"Please enter one or more API keys for {provider.title()}.",
             )
 
         ordered_keys = KeyManager.order_keys(provider, all_keys, model=config.model)
         if not ordered_keys:
             raise AgentError(
-                f"All configured API keys for {provider.title()} are marked invalid.",
-                hint="Please verify your API keys in the Agent settings.",
+                f"All configured API keys for {provider.title()} are invalid or in cooldown.",
+                hint="Please check your API keys or wait for cooldown to expire.",
             )
 
         last_error: Optional[Exception] = None
+
         for key in ordered_keys:
-            try:
-                if provider == "gemini":
-                    reply = cls._call_gemini(prompt, config, system_prompt, key=key)
-                elif provider == "anthropic":
-                    reply = cls._call_anthropic(prompt, config, system_prompt, key=key)
-                else:
-                    reply = cls._call_openai_compatible(prompt, config, system_prompt, key=key)
+            # Nexus attempt loop: 1 quick retry for transient blips before rotating
+            for attempt in (1, 2):
+                try:
+                    if provider == "gemini":
+                        reply = cls._call_gemini(prompt, config, system_prompt, key=key)
+                    elif provider == "anthropic":
+                        reply = cls._call_anthropic(prompt, config, system_prompt, key=key)
+                    else:
+                        reply = cls._call_openai_compatible(prompt, config, system_prompt, key=key)
 
-                KeyManager.record_success(provider, key, model=config.model)
-                return reply
+                    KeyManager.record_success(provider, key, model=config.model)
+                    return reply
 
-            except urllib.error.HTTPError as exc:
-                err_body = exc.read().decode("utf-8", errors="replace")
-                kind = KeyManager.record_error(
-                    provider=provider,
-                    key=key,
-                    model=config.model,
-                    status_code=exc.code,
-                    error_body=err_body,
-                )
-                last_error = AgentError(
-                    f"{provider.title()} API Error ({exc.code}): {err_body[:300]}",
-                    hint=f"Error on key {KeyManager.mask_key(key)} ({kind}). Attempting rotation...",
-                )
-                # If key is bad or rate limited, loop to try next key!
-                continue
-            except urllib.error.URLError as exc:
-                last_error = AgentError(f"Network error connecting to {provider.title()}: {exc}")
-                continue
-            except Exception as exc:
-                last_error = exc
-                continue
+                except urllib.error.HTTPError as exc:
+                    err_body = exc.read().decode("utf-8", errors="replace")
+                    kind = KeyManager.record_error(
+                        provider=provider,
+                        key=key,
+                        model=config.model,
+                        status_code=exc.code,
+                        error_body=err_body,
+                    )
+                    last_error = AgentError(
+                        f"{provider.title()} API Error ({exc.code}): {err_body[:250]}",
+                        hint=f"Key {KeyManager.mask_key(key)} recorded error kind '{kind}'.",
+                    )
+                    # If model not found (404), stop early — all keys would fail the same way
+                    if kind == MODEL:
+                        raise AgentError(f"Model '{config.model}' was rejected by {provider.title()}: {err_body[:250]}") from exc
+                    if kind == TRANSIENT and attempt == 1:
+                        time.sleep(1.5)
+                        continue
+                    break  # rotate to next key
+
+                except urllib.error.URLError as exc:
+                    last_error = AgentError(f"Network connection error to {provider.title()}: {exc}")
+                    if attempt == 1:
+                        time.sleep(1.5)
+                        continue
+                    break
+
+                except Exception as exc:
+                    last_error = exc
+                    if attempt == 1:
+                        time.sleep(1.0)
+                        continue
+                    break
 
         if last_error:
             if isinstance(last_error, AgentError):
@@ -2386,6 +2489,65 @@ class LLMClient:
                 f"Failed to connect to Ollama at {url}: {exc}",
                 hint="Ensure Ollama is running (`ollama serve`) and the model is pulled (`ollama pull llama3`).",
             ) from exc
+
+    @classmethod
+    def _call_gemini(
+        cls,
+        prompt: str,
+        config: LLMConfig,
+        system_prompt: Optional[str],
+        key: str,
+    ) -> str:
+        model = config.model or "gemini-3.1-flash-lite"
+
+        # 1. Try google-genai SDK if available
+        client = cls._get_genai_client(key)
+        if client is not None:
+            try:
+                from google.genai import types
+                gen_cfg = types.GenerateContentConfig(
+                    temperature=config.temperature,
+                    max_output_tokens=config.max_tokens,
+                )
+                if system_prompt:
+                    gen_cfg.system_instruction = system_prompt
+                resp = client.models.generate_content(model=model, contents=prompt, config=gen_cfg)
+                if resp and resp.text:
+                    return resp.text.strip()
+            except Exception as e:
+                # If SDK encounters non-HTTP Python error, fall through to REST call
+                pass
+
+        # 2. REST Endpoint fallback (Zero dependency standard library)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+        parts = []
+        if system_prompt:
+            parts.append({"text": system_prompt + "\n\n" + prompt})
+        else:
+            parts.append({"text": prompt})
+
+        payload = {
+            "contents": [{"parts": parts}],
+            "generationConfig": {
+                "temperature": config.temperature,
+                "maxOutputTokens": config.max_tokens,
+            },
+        }
+        req_body = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=req_body,
+            headers={"Content-Type": "application/json", "User-Agent": "TextSurgeon/2.0"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=config.timeout_sec) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            candidates = data.get("candidates", [])
+            if candidates:
+                parts_out = candidates[0].get("content", {}).get("parts", [])
+                if parts_out:
+                    return str(parts_out[0].get("text", "")).strip()
+            raise AgentError("No content returned from Gemini API.")
 
     @classmethod
     def _call_openai_compatible(
@@ -2443,45 +2605,6 @@ class LLMClient:
             raise AgentError("No response choices returned by OpenAI API.")
 
     @classmethod
-    def _call_gemini(
-        cls,
-        prompt: str,
-        config: LLMConfig,
-        system_prompt: Optional[str],
-        key: str,
-    ) -> str:
-        model = config.model or "gemini-3.1-flash-lite"
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
-        parts = []
-        if system_prompt:
-            parts.append({"text": system_prompt + "\n\n" + prompt})
-        else:
-            parts.append({"text": prompt})
-
-        payload = {
-            "contents": [{"parts": parts}],
-            "generationConfig": {
-                "temperature": config.temperature,
-                "maxOutputTokens": config.max_tokens,
-            },
-        }
-        req_body = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(
-            url,
-            data=req_body,
-            headers={"Content-Type": "application/json", "User-Agent": "TextSurgeon/2.0"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=config.timeout_sec) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            candidates = data.get("candidates", [])
-            if candidates:
-                parts = candidates[0].get("content", {}).get("parts", [])
-                if parts:
-                    return str(parts[0].get("text", "")).strip()
-            raise AgentError("No content returned from Gemini API.")
-
-    @classmethod
     def _call_anthropic(
         cls,
         prompt: str,
@@ -2527,6 +2650,15 @@ _MODULE_TO_PIP_MAP: Final[Dict[str, str]] = {
     "sklearn": "scikit-learn",
     "telebot": "pyTelegramBotAPI",
     "telegram": "python-telegram-bot",
+    "pandas": "pandas",
+    "openpyxl": "openpyxl",
+    "matplotlib": "matplotlib",
+    "seaborn": "seaborn",
+    "numpy": "numpy",
+    "requests": "requests",
+    "aiohttp": "aiohttp",
+    "fastapi": "fastapi",
+    "uvicorn": "uvicorn",
 }
 
 
@@ -2566,20 +2698,21 @@ class AutoPilotEngine:
             }
 
             try:
-                # 1. Query LLM
+                # 1. Query LLM using Nexus API Caller
                 raw_reply = LLMClient.send_prompt(current_prompt, llm_config)
                 round_info["raw_reply"] = raw_reply
 
                 # 2. Parse response
                 plan = parse_agent_response(raw_reply)
                 round_info["plan"] = {
-
                     "explanation": plan.explanation,
                     "files_count": len(plan.file_actions),
                     "setup_commands": plan.setup_commands,
                     "run_command": plan.run_command,
                     "expected_artifacts": plan.expected_artifacts,
                 }
+                round_info["explanation"] = plan.explanation
+                round_info["files"] = [fa.path for fa in plan.file_actions]
 
                 # 3. Apply changes with snapshot backup
                 apply_res = ws.apply_plan(plan, backup=True)
@@ -2602,7 +2735,6 @@ class AutoPilotEngine:
                     if missing_mod_match:
                         raw_mod = missing_mod_match.group(1)
                         pkg_to_install = _MODULE_TO_PIP_MAP.get(raw_mod, raw_mod)
-                        # Attempt auto-install of missing package
                         install_res = ws.install_dependencies([pkg_to_install])
                         round_info["auto_installed_package"] = pkg_to_install
                         round_info["auto_install_log"] = f"$ pip install {pkg_to_install}\n{install_res.stdout}\n{install_res.stderr}"
@@ -2631,10 +2763,12 @@ class AutoPilotEngine:
                 if exec_res.success:
                     return {
                         "status": "success",
+                        "success": True,
                         "rounds_completed": round_idx,
                         "final_round": round_info,
                         "rounds": rounds_history,
                         "artifacts": exec_res.artifacts_found,
+                        "final_artifacts": exec_res.artifacts_found,
                     }
 
                 # Build verification / diagnostic repair prompt for next round
@@ -2663,8 +2797,11 @@ class AutoPilotEngine:
 
         return {
             "status": "max_rounds_reached",
+            "success": False,
             "rounds_completed": max_rounds,
             "final_round": rounds_history[-1] if rounds_history else {},
             "rounds": rounds_history,
             "artifacts": last_result.artifacts_found if last_result else [],
+            "final_artifacts": last_result.artifacts_found if last_result else [],
         }
+
