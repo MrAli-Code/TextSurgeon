@@ -1,0 +1,42 @@
+# Environment & API Keys
+.env
+.env.local
+.env.*
+!.env.example
+
+# Sensitive Memory & Session Data
+.surgeon_memory.json
+.surgeon_session.json
+.surgeon_web_state.json
+.surgeon/
+
+# User Projects & Backups
+projects/
+git/
+
+# Logs & Temporary Files
+*.log
+*.tmp
+temp/
+tmp/
+scratch/
+
+# Python Cache & Build Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Editor & OS Metadata
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
