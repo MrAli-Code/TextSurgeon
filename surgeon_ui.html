@@ -1091,9 +1091,15 @@ function api(path, payload){
 
 /* ------------------------------------------------------------------ Toast */
 function toast(msg, kind, hint){
+  if (!msg) return;
+  var displayMsg = typeof msg === "object" ? (msg.error || msg.message || t("err")) : String(msg);
+  if (displayMsg === t("err") && !hint) {
+    // If message is just generic "Error" with no details, suppress redundant popup
+    return;
+  }
   var c = $("toasts");
   var d = el("div", "toast" + (kind ? " " + kind : ""));
-  d.appendChild(el("div", null, msg));
+  d.appendChild(el("div", null, displayMsg));
   if (hint) d.appendChild(el("div", "toast-hint", hint));
   c.appendChild(d);
   setTimeout(function(){
