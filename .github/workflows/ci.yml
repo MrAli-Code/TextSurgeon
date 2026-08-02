@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
+        node-version: [ '18.x', '20.x' ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Run Python Engine and CLI Unit Tests
+      run: |
+        python -m unittest test_surgeon_engine.py test_text_surgeon.py
+
+    - name: Run Agent, Skills & REST API Integration Tests
+      run: |
+        python test_surgeon_agent.py
+
+    - name: Run JavaScript Anchor Engine Tests
+      run: |
+        node test_surgeon_anchor.js

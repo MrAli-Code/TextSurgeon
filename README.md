@@ -1,127 +1,197 @@
-# ✂️ Text Surgeon v2.3 — Precision Splice Editor & Autonomous AI Agent
+<div align="center">
 
-> **A production-ready local AI Agent & Precision Text Editing Suite** with autonomous self-healing execution, modular domain skills, multi-key API rotation, and 100% token-efficient anchor editing. Zero third-party dependencies required for core execution.
+<img src="docs/assets/banner.jpg" alt="Text Surgeon — point, don't quote." width="920">
 
----
+# Text Surgeon v2.3
 
-## 🌟 Key Features
+**Surgical, AI-Assisted Precision Editing & Autonomous Multi-Round Agent Engine for Long Documents.**<br>
+Your AI points at a block with ~15 words — a deterministic engine replaces the whole thing, byte-exactly.
 
-### 🤖 1. Autonomous Auto-Pilot Engine (Self-Healing Loop)
-* **Plan-Execute-Verify Loop**: Give the agent a high-level goal. It designs multi-file plans, writes full code, executes setup commands, and runs your project automatically.
-* **Automatic Pip Dependency Repair**: If execution fails due to a missing Python module (e.g. `No module named 'pandas'`), the engine automatically installs the missing package via `pip` and re-runs the code without breaking.
-* **Closed-Loop Error Repair**: Terminal stderr logs and stack traces are captured and injected back into the LLM prompt for multi-round self-healing.
+[![Version](https://img.shields.io/badge/version-2.3.0-0d9488)](CHANGELOG.md)
+[![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-zero-2dd4bf)](CONTRIBUTING.md)
+[![Tests](https://img.shields.io/badge/tests-188%20passing-brightgreen)](.github/workflows/ci.yml)
+[![CI](https://github.com/faithsaly5-stack/TextSurgeon/actions/workflows/ci.yml/badge.svg)](https://github.com/faithsaly5-stack/TextSurgeon/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-### 🧩 2. Modular Domain Skills Subsystem
-* **Scalable Skill Architecture**: Extend agent capabilities over time using YAML-frontmatter `SKILL.md` files.
-* **Built-in Domain Skills**:
-  * 📊 **PowerPoint Presentation Builder (`powerpoint_maker`)**: Widescreen 16:9 slides, modern card containers, auto-fitting typography, and RTL/Farsi support using `python-pptx`.
-  * 📈 **Excel & Data Analyst (`excel_data_analyst`)**: Automated data pipelines, pandas analytics, charts, openpyxl formatting.
-  * 📝 **Word Report Builder (`docx_report_builder`)**: Executive reports, stylized callout blocks, tables using `python-docx`.
-  * 🌐 **Web Scraper & Crawler (`web_scraper`)**: Extraction scripts using BeautifulSoup4, requests, and HTML parsers.
-  * ⚡ **FastAPI REST Backend (`fastapi_backend`)**: Production-ready REST APIs, Pydantic v2 schemas, CORS.
-  * 🤖 **Telegram Bot Builder (`telegram_bot`)**: Interactive Telegram bots with python-telegram-bot / aiogram.
-  * 📄 **Office CLI (`officecli`)**: Single-binary manipulation of `.docx`, `.xlsx`, `.pptx`.
-* **Automatic Skill Detection**: Automatically matches user prompts to domain skills or allows manual selection & URL skill imports.
+**English** · [فارسی](README.fa.md) · [简体中文](README.zh-CN.md)
 
-### 🔑 3. Multi-Key API Rotation & Rate Limit Failover
-* **Multi-Key Pool**: Configure multiple API keys per provider (comma or semicolon separated).
-* **Smart Failover**: Automatically detects `HTTP 429 Rate Limits` or `401 Invalid Keys` and immediately fails over to the next healthy key in the pool.
-* **Live Telemetry Badges**: Visual real-time health tracking (`Ready`, `Cooldown (Xs)`, `Invalid`) in the Web UI.
-
-### 📁 4. Safe Projects Manager & Isolated Workspaces
-* **Project Hub**: Create, switch, and manage isolated safe projects inside `projects/`.
-* **Atomic Backup Snapshots**: Transactional backups saved before every file modification.
-* **Environment Secret Manager**: Built-in editor for `.env` files per project.
-* **Zip Export**: Export full project workspaces into `.zip` archives with a single click.
-
-### ✂️ 5. Precision Anchor Splice Protocol (v2)
-* **Anchor-Based Replacement**: Replaces multi-line code blocks using 5–10 word verbatim boundary anchors instead of rewriting whole files.
-* **95%+ Token Savings**: Follow-up edits skip re-sending the document, cutting prompt sizes from thousands of tokens down to ~280 tokens.
-* **First-Class Bidi & RTL**: Full support for Persian, Arabic, and multilingual texts without breaking quotation marks or layout direction.
+</div>
 
 ---
 
-## 🚀 Quick Start for First-Time Users
+## 🩻 The Problem
 
-### 1. Prerequisites
-* Python 3.8 or higher installed on your computer.
-* *(Optional)* Local LLM runner like [Ollama](https://ollama.com) if running offline models (`llama3`, `qwen2.5-coder`).
+You paste a 5,000-word document into an AI chat and ask for *one* change. The model re-types the entire document back — slowly, expensively, and with paragraphs quietly missing.
 
-### 2. Launching the App
-#### Windows:
-Double-click **`Start-Text-Surgeon.bat`** or run:
-```cmd
-Start-Text-Surgeon.bat
+**Text Surgeon flips the contract.** The AI never re-quotes your text. It *points* at the block to change with two short anchors, and a zero-dependency engine performs the splice on your machine:
+
+```text
+@@EDIT anchor
+START-ANCHOR: The migration process begins when
+END-ANCHOR: and completes the rollback safely.
+<<<
+The migration is now a single atomic switchover, verified end-to-end.
+>>>
 ```
 
-#### macOS / Linux:
+The engine resolves that selection to **exactly one** location — or refuses, with machine-actionable repair data — before a single byte moves:
+
+```text
+SELECTION CONFIRMED   anchor · lines 42–118 · 77 lines · 4,210 chars · sha256 3f6ac1b2…
+```
+
+Eleven words referenced. Seventy-seven lines replaced. The other 4,900 lines were never re-typed — so they were never at risk.
+
+---
+
+## ✨ Features
+
+### 1. 🎯 Precision Surgeon Selection Engine
+* **Statistical Anchors (`anchor`)**: Selects blocks of any size (10 lines or 1,000 lines) by quoting only the first ~5–10 words and last ~5–10 words.
+* **Tag Markers (`tags`)**: Surgically modifies regions delimited by `[START_EDIT]` / `[END_EDIT]` comment tags.
+* **Context Neighborhoods (`context`)**: Identifies repeated boilerplate by looking at surrounding lines.
+* **Verbatim Search (`verbatim`)**: Fast exact search-and-replace for micro edits.
+
+### 2. 🤖 Autonomous Multi-Round AI Agent (Auto-Pilot)
+* **Goal-Driven Execution**: Provide a prompt, and the agent autonomously plans, writes, verifies, and iteratively refines files until tests pass or artifacts are created.
+* **Self-Healing Loop**: If a script fails (e.g. missing package or syntax error), the engine catches the error, auto-installs missing dependencies via `pip`, and generates dynamic diagnostic repair prompts.
+* **Workspace Sandboxing**: Isolated execution with path traversal protection and snapshot rollback.
+
+### 3. 📦 Scalable Extensible Skills Engine
+* **Dynamic Skill Discovery**: Drop any skill directory with a `SKILL.md` into the `skills/` folder to instantly empower the agent.
+* **Built-in Production Skills**:
+  * 📊 **Office CLI & PowerPoint Maker** (`python-pptx` automated deck creation)
+  * 📈 **Excel Data Analyst** (`openpyxl` spreadsheets & charts)
+  * 📝 **Docx Report Builder** (`python-docx` styled documents)
+  * 🌐 **Web Scraper & Data Extractor** (`beautifulsoup4` + `requests`)
+  * ⚡ **FastAPI High-Performance Backend**
+  * 🤖 **Telegram Bot Builder** (`python-telegram-bot`)
+
+### 4. 🔑 Resilient Multi-Provider API Calling & Key Rotation
+* **Supported Providers**: OpenAI, Google Gemini, Anthropic Claude, Groq, DeepSeek, OpenRouter, and local Ollama (`llama3`, `qwen2.5-coder`).
+* **Automatic Key Rotation**: Supports comma-separated API keys with instant failover on rate limits (`HTTP 429` / quota errors).
+
+### 5. 🌍 Built for Multilingual & RTL Text
+* **Invisible-elastic matching**: Transparent handling of Persian/Arabic zero-width non-joiners (ZWNJ), soft hyphens, and bidirectional isolate marks.
+* **Confusable character folding**: Folds Arabic vs Persian character variants (Kaf, Yeh, Digits) for search without altering untouched file bytes.
+
+---
+
+## 🚀 Quick Start
+
+### Windows (One-Click):
+Double-click **`Start-Text-Surgeon.bat`**. The operating room opens at **`http://127.0.0.1:8765`**.
+
+### macOS / Linux:
 ```bash
 python3 surgeon_web.py
 ```
 
-Your default browser will automatically open:
-👉 **`http://127.0.0.1:8765`**
-
+> **Zero External Dependencies Required for Core**: Python 3.8+ standard library only.
 
 ---
 
-## 🔐 Adding Your API Keys
+## 🔐 Configuring API Keys
 
-You can provide your API keys in two convenient ways:
-
-### Option A: Via the Web UI (Recommended)
-1. Switch to **🤖 Agent Mode** in the Web UI header.
-2. In the **Auto-Pilot Engine** panel, select your provider (OpenAI, Gemini, Anthropic, Groq, DeepSeek, OpenRouter).
-3. Paste one or more API keys in the key field (comma-separated for key rotation, e.g. `sk-key1, sk-key2`).
+### Option A: Via the Web UI
+1. Open `http://127.0.0.1:8765` in your browser.
+2. Switch to **🤖 Agent Mode** in the header.
+3. In the **Auto-Pilot Engine** panel, choose your AI provider and paste your API key(s).
 
 ### Option B: Via `.env` File
-1. Copy `.env.example` to `.env`:
-   ```bash
-   cp .env.example .env
-   ```
-2. Open `.env` and add your keys:
-   ```env
-   OPENAI_API_KEY=sk-proj-your_key_1, sk-proj-your_key_2
-   GEMINI_API_KEY=your_gemini_key
-   ANTHROPIC_API_KEY=sk-ant-your_anthropic_key
-   ```
+```bash
+cp .env.example .env
+```
+Edit `.env` with your API keys:
+```env
+OPENAI_API_KEY=sk-proj-your_key_1, sk-proj-your_key_2
+GEMINI_API_KEY=your_gemini_key
+ANTHROPIC_API_KEY=sk-ant-your_anthropic_key
+GROQ_API_KEY=gsk_your_groq_key
+```
 
 ---
 
-## 🐙 One-Click GitHub Deployment (For Developers)
+## 🐙 One-Click GitHub Deployment
 
-To push local updates to GitHub without accidentally exposing your private API keys or personal session data:
+Push your local updates to GitHub with sensitive API keys and personal files protected by `.gitignore`:
 
-### On Windows:
-Double-click **`deploy_to_github.bat`** or run:
-```cmd
-deploy_to_github.bat
-```
+### Windows:
+Double-click **`deploy_to_github.bat`**.
 
-### On macOS / Linux:
+### macOS / Linux:
 ```bash
 chmod +x deploy_to_github.sh
 ./deploy_to_github.sh
 ```
 
-> 🛡️ **Built-in Security Notice**: The repository includes a pre-configured `.gitignore` that strictly excludes `.env`, `.surgeon_memory.json`, user workspace files in `projects/`, session tokens, and build logs from being pushed to public repositories.
-
 ---
 
-## 🧪 Running the Automated Test Suite
+## 🧪 Automated Tests
 
-Text Surgeon comes with 79 automated integration and unit tests:
+188 tests covering 100% of engine mechanics, CLI, Web REST APIs, and JS port:
 
 ```bash
-# Test Agent Engine, Skills Subsystem, Key Manager & REST APIs (55 tests)
+# Python Engine & CLI Tests (115 tests)
+python -m unittest test_surgeon_engine.py test_text_surgeon.py
+
+# Multi-Round Agent & Skills Integration Tests (55 tests)
 python test_surgeon_agent.py
 
-# Test Core Precision Splice Engine & Protocol v2 (24 tests)
-python test_text_surgeon.py
+# JavaScript Anchor Port Parity (18 tests)
+node test_surgeon_anchor.js
 ```
 
 ---
 
-## 📜 License & Author
+## 🗂 Project Anatomy
 
-Built with precision for agentic coding workflows. Built using Python Standard Library components.
+```text
+TextSurgeon/
+├── Start-Text-Surgeon.bat   # One-click Windows launcher
+├── deploy_to_github.bat     # One-click Windows GitHub deployment
+├── deploy_to_github.sh      # One-click Unix GitHub deployment
+├── .env.example             # Safe environment configuration template
+├── .gitignore               # Strict security exclusion rules
+├── text_surgeon.py          # Workflow core & CLI
+├── surgeon_engine.py        # Selection & splice engine (Protocol v2)
+├── surgeon_agent.py         # Autonomous multi-round agent & skills engine
+├── surgeon_web.py           # Standard-library web server & REST APIs
+├── surgeon_ui.html          # Interactive Web Operating Room (EN/FA, RTL)
+├── surgeon_anchor.js        # JavaScript port of anchor selection
+├── skills/                  # Extensible skills directory
+│   ├── docx_report_builder/
+│   ├── excel_data_analyst/
+│   ├── fastapi_backend/
+│   ├── officecli/
+│   ├── powerpoint_maker/
+│   ├── telegram_bot/
+│   └── web_scraper/
+├── docs/assets/banner.jpg   # Project banner
+├── SCHEMA.md                # Surgeon Protocol v2 specification
+├── test_surgeon_engine.py   # Core engine test suite
+├── test_text_surgeon.py     # CLI integration test suite
+├── test_surgeon_agent.py    # Agent & skills test suite
+└── test_surgeon_anchor.js   # JS engine test suite
+```
+
+---
+
+## 🔒 Privacy & Security
+
+Everything runs locally on `127.0.0.1`. Your documents are never uploaded anywhere by this tool. The only external network requests are the AI API calls you explicitly trigger in Agent Mode.
+
+## 📜 License
+
+[MIT License](LICENSE) — free to use, modify, and distribute.
+
+---
+
+<div align="center">
+
+**If Text Surgeon saved your document, leave a ⭐ on GitHub!**
+
+*Point, don't quote.*
+
+</div>
