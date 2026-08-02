@@ -51,14 +51,10 @@ if not exist ".gitignore" (
     echo [OK] Protection .gitignore created.
 )
 
-echo [2/5] Verification: Checking git status (sensitive files excluded)...
-git status --short
-echo.
-
 :: 4. Check / Configure Remote URL
 git remote get-url origin >nul 2>nul
 if %errorlevel% neq 0 (
-    echo [3/5] No GitHub remote repository configured.
+    echo [2/5] No GitHub remote repository configured.
     set /p REPO_URL="Enter your GitHub Repository URL (e.g. https://github.com/username/text-surgeon.git): "
     if "!REPO_URL!"=="" (
         echo [ERROR] Repository URL cannot be empty. Aborting deployment.
@@ -70,46 +66,92 @@ if %errorlevel% neq 0 (
     echo [OK] Remote origin added: !REPO_URL!
 ) else (
     for /f "delims=" %%r in ('git remote get-url origin') do set CURRENT_REMOTE=%%r
-    echo [3/5] Target Remote: !CURRENT_REMOTE!
+    echo [2/5] Current Target Remote: !CURRENT_REMOTE!
+    set CHANGE_REMOTE=
+    set /p CHANGE_REMOTE="Press Enter to keep this remote, or enter a new URL to change: "
+    if not "!CHANGE_REMOTE!"=="" (
+        git remote set-url origin !CHANGE_REMOTE!
+        echo [OK] Updated remote origin to: !CHANGE_REMOTE!
+        set CURRENT_REMOTE=!CHANGE_REMOTE!
+    )
 )
 echo.
 
-:: 5. Prompt for Commit Message
+:: Detect current branch name
+set CURRENT_BRANCH=
+for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set CURRENT_BRANCH=%%b
+if "!CURRENT_BRANCH!"=="" set CURRENT_BRANCH=main
+if "!CURRENT_BRANCH!"=="HEAD" set CURRENT_BRANCH=main
+echo [3/5] Active Branch: !CURRENT_BRANCH!
+echo.
+
+:: 5. Stage & Commit
 echo [4/5] Staging files for commit...
 git add .
 
-set COMMIT_MSG=
-set /p COMMIT_MSG="Enter commit message (Press Enter for default: Update Text Surgeon v2.3): "
-if "!COMMIT_MSG!"=="" set COMMIT_MSG=Update Text Surgeon v2.3
-
-echo Committing changes...
-git commit -m "!COMMIT_MSG!"
+git diff --cached --quiet 2>nul
+if %errorlevel% neq 0 (
+    set COMMIT_MSG=
+    set /p COMMIT_MSG="Enter commit message (Press Enter for default: Update Text Surgeon v2.3): "
+    if "!COMMIT_MSG!"=="" set COMMIT_MSG=Update Text Surgeon v2.3
+    
+    echo Committing changes...
+    git commit -m "!COMMIT_MSG!"
+) else (
+    echo [INFO] Working tree is clean. Ready to push existing commits.
+)
+echo.
 
 :: 6. Push to GitHub
-echo.
-echo [5/5] Pushing changes to GitHub main branch...
-git push -u origin main
+echo [5/5] Pushing changes to GitHub (!CURRENT_BRANCH!)...
+git push -u origin !CURRENT_BRANCH!
 if %errorlevel% eq 0 (
     echo.
     echo =====================================================================
     echo    [SUCCESS] DEPLOYMENT COMPLETED! Your changes are live on GitHub.
     echo =====================================================================
-) else (
-    echo.
-    echo [NOTICE] Standard push failed. Trying fallback git push origin main...
-    git push origin main
+    goto :done
+)
+
+echo.
+echo [NOTICE] Standard push failed. Trying to sync remote branch (git pull --rebase)...
+git pull --rebase origin !CURRENT_BRANCH! 2>nul
+if %errorlevel% eq 0 (
+    echo Sync succeeded. Re-attempting push...
+    git push -u origin !CURRENT_BRANCH!
     if %errorlevel% eq 0 (
         echo.
         echo =====================================================================
         echo    [SUCCESS] DEPLOYMENT COMPLETED! Your changes are live on GitHub.
         echo =====================================================================
-    ) else (
-        echo.
-        echo [ERROR] Failed to push to GitHub.
-        echo Please check your repository URL and GitHub credentials.
+        goto :done
     )
 )
 
+echo.
+echo [NOTICE] Trying fallback: git push -u origin HEAD:!CURRENT_BRANCH! ...
+git push -u origin HEAD:!CURRENT_BRANCH!
+if %errorlevel% eq 0 (
+    echo.
+    echo =====================================================================
+    echo    [SUCCESS] DEPLOYMENT COMPLETED! Your changes are live on GitHub.
+    echo =====================================================================
+    goto :done
+)
+
+echo.
+echo =====================================================================
+echo [ERROR] Push to GitHub failed (Permission 403 or Authentication Error).
+echo.
+echo How to resolve:
+echo 1. Check which GitHub account you are logged in as.
+echo    If your GitHub account is different from the repo owner, either:
+echo    - Run: gh auth login
+echo    - Or change your remote to your own repository in step 2.
+echo 2. Check repository permissions on GitHub.
+echo =====================================================================
+
+:done
 echo.
 pause
 popd
