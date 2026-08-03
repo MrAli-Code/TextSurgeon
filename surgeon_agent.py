@@ -2088,6 +2088,7 @@ END-ANCHOR: last 5-10 words of section to change
 3. ERROR HANDLING: Ensure scripts handle edge cases, create required folders if needed, and print informative progress messages to stdout. If an error is fatal, do NOT swallow it with exit code 0; raise or exit(1) so the repair loop can heal it.
 4. ENVIRONMENT CONFIG: Always load environment variables (e.g. `python-dotenv`) for credentials/tokens instead of hardcoding placeholders.
 5. DELIMITERS: Write `<<<` and `>>>` on their own lines as plain ASCII.
+6. LARGE FILES & DETERMINISTIC PROGRAMMATIC SURGERY: If operating on large files (>1,000 lines), binary data, or complex AST structures where raw text generation risks LLM hallucination or token limits, write a dedicated, concise Python modification script (`@@FILE patch_script.py`) to parse, filter, regex-replace, or surgically transform the file on disk, and run it immediately with `@@RUN python patch_script.py`.
 """
 
 
