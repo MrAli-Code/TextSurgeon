@@ -2464,6 +2464,48 @@ class KeyManager:
         return tokens
 
     @classmethod
+    def load_default_keys(cls, search_dirs: Optional[Sequence[str]] = None) -> List[str]:
+        """Discovers and loads default API keys from apis.txt, apis.text, or .env files."""
+        candidates: List[str] = []
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        check_dirs = [app_dir, os.getcwd()]
+        if search_dirs:
+            check_dirs.extend(search_dirs)
+
+        for d in check_dirs:
+            if not d or not os.path.isdir(d):
+                continue
+            for fname in ("apis.txt", "apis.text", "api_keys.txt", ".env"):
+                fpath = os.path.join(d, fname)
+                if os.path.isfile(fpath):
+                    try:
+                        with open(fpath, "r", encoding="utf-8", errors="replace") as fh:
+                            content = fh.read()
+                        if fname.startswith(".env"):
+                            env_map = EnvManager.parse_env(content)
+                            for k in ("GEMINI_API_KEYS", "GEMINI_API_KEY", "OPENAI_API_KEY", "API_KEYS"):
+                                if k in env_map:
+                                    candidates.extend(cls.parse_keys(env_map[k]))
+                        else:
+                            candidates.extend(cls.parse_keys(content))
+                    except OSError:
+                        pass
+
+        # Also check environment variables
+        for env_var in ("GEMINI_API_KEYS", "GEMINI_API_KEY", "OPENAI_API_KEY", "API_KEYS"):
+            val = os.environ.get(env_var)
+            if val:
+                candidates.extend(cls.parse_keys(val))
+
+        seen = set()
+        deduped: List[str] = []
+        for k in candidates:
+            if k not in seen:
+                seen.add(k)
+                deduped.append(k)
+        return deduped
+
+    @classmethod
     def get_cap_for(cls, model: str) -> Optional[int]:
         """Returns daily cap (RPD) for a model."""
         clean_m = model.lower().strip()
@@ -2647,6 +2689,8 @@ class LLMConfig:
             keys.extend(KeyManager.parse_keys(self.api_keys))
         if self.api_key:
             keys.extend(KeyManager.parse_keys(self.api_key))
+        if not keys:
+            keys.extend(KeyManager.load_default_keys())
         seen = set()
         deduped = []
         for k in keys:

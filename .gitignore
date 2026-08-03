@@ -3,6 +3,13 @@
 .env.local
 .env.*
 !.env.example
+apis.txt
+apis.text
+*.text
+api_keys.txt
+api_keys.json
+*.key
+*.pem
 
 # Sensitive Memory & Session Data
 .surgeon_memory.json
