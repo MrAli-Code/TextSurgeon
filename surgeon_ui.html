@@ -2307,9 +2307,24 @@ function runMemorySynthesis(){
 
 /* ------------------------------------------------------------------ Auto-Pilot Multi-Key & Providers */
 function initAutoPilotProviders(){
-  var savedProvider = localStorage.getItem("ts_ap_provider") || "ollama";
+  var savedProvider = localStorage.getItem("ts_ap_provider") || "gemini";
   $("apProvider").value = savedProvider;
   updateProviderUI();
+  
+  api("/api/agent/keys/status?provider=gemini")
+    .then(function(res){
+      if (res && res.default_keys_count > 0 && !localStorage.getItem("ts_key_gemini")) {
+        if (!localStorage.getItem("ts_ap_provider")) {
+          localStorage.setItem("ts_ap_provider", "gemini");
+          $("apProvider").value = "gemini";
+        }
+      }
+      updateProviderUI();
+    })
+    .catch(function(){
+      updateProviderUI();
+    });
+
   $("apProvider").onchange = function(){
     updateProviderUI();
     try { localStorage.setItem("ts_ap_provider", $("apProvider").value); } catch(e){}
@@ -2356,6 +2371,13 @@ function updateProviderUI(){
     else if (p === "deepseek") $("apModel").value = "deepseek-chat";
     else if (p === "openrouter") $("apModel").value = "anthropic/claude-3.5-sonnet";
   }
+  
+  if (p === "gemini" && !$("apApiKey").value) {
+    $("apApiKey").placeholder = "Auto-loaded 25 keys from apis.txt (or paste custom keys here)";
+  } else {
+    $("apApiKey").placeholder = "sk-... (comma or newline separated for pool)";
+  }
+  
   refreshKeyTelemetry();
 }
 
@@ -2365,26 +2387,27 @@ function refreshKeyTelemetry(){
   var badge = $("keyStatusBadge");
   var row = $("keyStatusRow");
   
-  if (p === "ollama" || !rawKey) {
+  if (p === "ollama") {
     badge.classList.add("hidden");
     row.classList.add("hidden");
     return;
   }
   
-  var keys = rawKey.split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);
-  if (!keys.length) {
-    badge.classList.add("hidden");
-    row.classList.add("hidden");
-    return;
-  }
+  var keys = rawKey ? rawKey.split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
   
-  api("/api/agent/keys/status", { api_keys: keys })
+  api("/api/agent/keys/status", { provider: p, api_keys: keys })
     .then(function(res){
       var summary = res.summary || {};
+      if (!summary.total && !res.default_keys_count) {
+        badge.classList.add("hidden");
+        row.classList.add("hidden");
+        return;
+      }
       badge.classList.remove("hidden");
-      badge.textContent = "🔑 " + summary.ready + " ready / " + summary.total + " keys";
+      var srcText = (!rawKey && res.default_keys_count) ? " (apis.txt)" : "";
+      badge.textContent = "🔑 " + (summary.ready || 0) + " ready / " + (summary.total || 0) + " keys" + srcText;
       
-      row.innerHTML = '<span style="font-size:10.5px;font-weight:600;color:var(--muted);margin-inline-end:4px">Active Pool:</span>';
+      row.innerHTML = '<span style="font-size:10.5px;font-weight:600;color:var(--muted);margin-inline-end:4px">Active Pool' + srcText + ':</span>';
       (res.keys || []).forEach(function(k){
         var kb = el("span", "key-badge " + k.state, k.masked + " (" + k.state + ")");
         row.appendChild(kb);

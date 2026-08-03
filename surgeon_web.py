@@ -837,6 +837,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
         scan = ws.scan()
         backups = ws.list_backups()
         meta = ws.get_project_meta()
+        default_keys = agent.KeyManager.load_default_keys()
         self._send_json(
             {
                 "exists": os.path.isdir(workspace_dir),
@@ -850,6 +851,9 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
                 "est_tokens": scan.get("est_tokens", 0),
                 "backups_count": len(backups),
                 "project": meta,
+                "default_keys": default_keys,
+                "default_keys_count": len(default_keys),
+                "has_default_keys": bool(default_keys),
             }
         )
 
@@ -1512,19 +1516,22 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
 
     def _api_agent_keys_status(self) -> None:
         """GET/POST /api/agent/keys/status → returns key health status and pool summary."""
-        provider = "openai"
+        provider = "gemini"
         keys_list: List[str] = []
         if self.command == "POST":
             data = self._read_json()
-            provider = str(data.get("provider") or "openai").strip().lower()
+            provider = str(data.get("provider") or "gemini").strip().lower()
             raw_keys = data.get("api_keys") if "api_keys" in data else data.get("keys", [])
             keys_list = agent.KeyManager.parse_keys(raw_keys)
         else:
             query = urlparse(self.path).query
             params = parse_qs(query)
-            provider = params.get("provider", ["openai"])[0].strip().lower()
+            provider = params.get("provider", ["gemini"])[0].strip().lower()
             raw_keys = params.get("keys", [""])[0].strip()
             keys_list = agent.KeyManager.parse_keys(raw_keys)
+
+        if not keys_list:
+            keys_list = agent.KeyManager.load_default_keys()
 
         status = agent.KeyManager.get_status(provider, keys_list)
         summary = agent.KeyManager.get_pool_status(keys_list, provider)
@@ -1532,6 +1539,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
             "provider": provider,
             "keys": status,
             "summary": summary,
+            "default_keys_count": len(keys_list),
         })
 
 
