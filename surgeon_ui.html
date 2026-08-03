@@ -22,276 +22,263 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size:14.5px;line-height:1.65;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size:14px;line-height:1.6;min-height:100vh}
 body[dir="rtl"]{font-family:var(--font-fa)}
-.wrap{max-width:1300px;margin:0 auto;padding:16px 22px 60px}
+.wrap{max-width:1440px;margin:0 auto;padding:12px 18px 40px}
 .bidi{unicode-bidi:plaintext;text-align:start}
 .hidden{display:none !important}
 
 /* ---------- header ---------- */
-header{display:flex;align-items:center;gap:14px;padding:6px 0 18px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#0284c7);display:flex;align-items:center;justify-content:center;font-size:21px;color:#021b18;flex:none;box-shadow:0 4px 16px rgba(45,212,191,.25)}
-.logo.agent{background:linear-gradient(135deg,#c084fc,#38bdf8);color:#1c072e;box-shadow:0 4px 16px rgba(168,85,247,.3)}
-.brand h1{font-size:19px;margin:0;font-weight:700;letter-spacing:.2px}
-.brand p{margin:0;font-size:12px;color:var(--muted)}
+header{display:flex;align-items:center;gap:12px;padding:4px 0 14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#0284c7);display:flex;align-items:center;justify-content:center;font-size:19px;color:#021b18;flex:none;box-shadow:0 4px 14px rgba(45,212,191,.25)}
+.logo.agent{background:linear-gradient(135deg,#c084fc,#38bdf8);color:#1c072e;box-shadow:0 4px 14px rgba(168,85,247,.3)}
+.brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand p{margin:0;font-size:11.5px;color:var(--muted)}
 .spacer{flex:1}
 
 /* App Mode Navigation */
-.app-nav{display:flex;background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:4px;gap:4px}
-.nav-tab{background:transparent;border:none;color:var(--muted);border-radius:8px;padding:7px 18px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s}
+.app-nav{display:flex;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px}
+.nav-tab{background:transparent;border:none;color:var(--muted);border-radius:7px;padding:6px 14px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
 .nav-tab:hover{color:var(--text)}
 .nav-tab.active{background:rgba(45,212,191,.15);color:var(--accent);border:1px solid rgba(45,212,191,.4)}
 .nav-tab.agent-tab.active{background:rgba(168,85,247,.2);color:#e9d5ff;border:1px solid rgba(168,85,247,.5);box-shadow:0 0 12px rgba(168,85,247,.2)}
 
-.ghost-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:7px 14px;font-family:inherit;font-size:13px;cursor:pointer;transition:.15s}
+.ghost-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:9px;padding:6px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
 .ghost-btn:hover{color:var(--text);border-color:var(--accent-dim)}
 .danger:hover{color:var(--red);border-color:var(--red)}
 
 /* ---------- file & workspace bars ---------- */
-.filebar{background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.filebar{background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;box-shadow:0 4px 18px rgba(0,0,0,.22)}
 .agent-bar{border-color:rgba(168,85,247,.25);background:linear-gradient(180deg,rgba(168,85,247,.04) 0%,var(--panel) 100%)}
-.filerow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.filerow input{flex:1;min-width:240px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 13px;font-family:var(--mono);font-size:13px;direction:ltr;text-align:left}
+.filerow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filerow input{flex:1;min-width:220px;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:8px 12px;font-family:var(--mono);font-size:12.5px;direction:ltr;text-align:left}
 .filerow input:focus{outline:none;border-color:var(--accent-dim)}
 .agent-bar .filerow input:focus{border-color:var(--agent-accent)}
 
-.btn{background:var(--accent);border:none;color:var(--accent-ink);font-weight:600;border-radius:10px;padding:9px 18px;font-family:inherit;font-size:13.5px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn{background:var(--accent);border:none;color:var(--accent-ink);font-weight:600;border-radius:9px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .btn:hover{background:#5eead4}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn.sub{background:var(--panel-2);color:var(--text);border:1px solid var(--border)}
 .btn.sub:hover{border-color:var(--accent-dim);background:var(--panel-3)}
 .btn.agent-btn{background:linear-gradient(135deg,#a855f7,#9333ea);color:#ffffff;box-shadow:0 2px 10px rgba(168,85,247,.3)}
 .btn.agent-btn:hover{background:linear-gradient(135deg,#c084fc,#a855f7)}
-.btn.agent-glow{background:linear-gradient(135deg,#c084fc,#a855f7);color:#1e0b33;font-weight:700;box-shadow:0 0 16px rgba(168,85,247,.45)}
+.btn.agent-glow{background:linear-gradient(135deg,#c084fc,#a855f7);color:#1e0b33;font-weight:700;box-shadow:0 0 14px rgba(168,85,247,.4)}
 .btn.agent-glow:hover{background:#e9d5ff}
 .btn.run-btn{background:var(--cyan);color:#082f49}
 .btn.run-btn:hover{background:#7dd3fc}
 
 /* Project Select & Quick Bar */
-.project-select-wrap{display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid rgba(168,85,247,.35);border-radius:10px;padding:4px 10px}
-.project-select-label{font-size:12px;color:#d8b4fe;font-weight:600;white-space:nowrap}
-select.project-dropdown{background:transparent;border:none;color:var(--text);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:5px 4px;outline:none;max-width:240px}
+.project-select-wrap{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid rgba(168,85,247,.35);border-radius:9px;padding:3px 8px}
+.project-select-label{font-size:11.5px;color:#d8b4fe;font-weight:600;white-space:nowrap}
+select.project-dropdown{background:transparent;border:none;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:4px 3px;outline:none;max-width:220px}
 select.project-dropdown option{background:var(--panel);color:var(--text)}
 
-.project-quick-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-soft)}
-.proj-pill{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:4px 11px;font-size:12px;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.14s;font-family:var(--mono)}
+.project-quick-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft)}
+.proj-pill{background:var(--panel-2);border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:11.5px;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.14s;font-family:var(--mono)}
 .proj-pill:hover{border-color:rgba(168,85,247,.5);color:var(--text);transform:translateY(-1px)}
 .proj-pill.active{border-color:var(--agent-accent);color:#e9d5ff;background:rgba(168,85,247,.15);font-weight:600}
 
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.chip{background:var(--panel-2);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{background:var(--panel-2);border:1px solid var(--border);border-radius:999px;padding:2px 10px;font-size:11.5px;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
 .chip b{color:var(--text);font-weight:600}
 .chip.accent{border-color:rgba(45,212,191,.4);color:var(--accent)}
 .chip.agent{border-color:rgba(168,85,247,.45);color:#d8b4fe}
-.chip.warn{border-color:rgba(251,191,36,.45);color:var(--warn);max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip.warn{border-color:rgba(251,191,36,.45);color:var(--warn);max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* ---------- files workspace ---------- */
-.files-panel{margin-top:-4px}
-.files-head{display:flex;align-items:center;font-size:12px;color:var(--faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.file-item{display:flex;align-items:center;gap:12px;background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:9px 12px;margin-bottom:8px;cursor:pointer;transition:.14s}
-.file-item:hover{border-color:var(--accent-dim);transform:translateY(-1px)}
-.file-item.active{border-color:var(--accent);background:rgba(45,212,191,.06)}
-.file-item.missing{opacity:.55}
-.file-item .fmain{flex:1;min-width:0}
-.file-item .fname{font-weight:600;font-size:13.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:start}
-.file-item.active .fname{color:var(--accent)}
-.file-item .fpath{font-size:11.5px;color:var(--faint);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:start}
-.file-badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:none}
-.fbadge{font-size:11px;border-radius:999px;padding:2px 9px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
-.fbadge.ops{color:var(--accent);border-color:rgba(45,212,191,.35)}
-.fbadge.pend{color:var(--warn);border-color:rgba(251,191,36,.45);max-width:200px;overflow:hidden;text-overflow:ellipsis}
-.fbadge.miss{color:var(--red);border-color:var(--red)}
-.fbadge.live{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
-.fforget{flex:none;background:transparent;border:none;color:var(--faint);font-size:18px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:8px;transition:.14s}
-.fforget:hover{color:var(--red);background:var(--red-bg)}
+/* ---------- 1-Click Goal Starters Row & Recent Goals ---------- */
+.goal-starters-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.goal-starter-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-inline-end:2px}
+.goal-starter-chip{background:var(--panel-2);border:1px solid var(--border);border-radius:7px;padding:3px 8px;font-size:11.5px;color:var(--text);cursor:pointer;transition:.14s;display:inline-flex;align-items:center;gap:4px}
+.goal-starter-chip:hover{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.12);transform:translateY(-1px);color:#e9d5ff}
+.recent-goal-chip{background:var(--panel-3);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;color:var(--muted);cursor:pointer;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:.14s;display:inline-block}
+.recent-goal-chip:hover{border-color:rgba(168,85,247,.45);color:#e9d5ff;background:rgba(168,85,247,.1);transform:translateY(-1px)}
 
-/* ---------- layout ---------- */
-.main{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:1040px){.main{grid-template-columns:1fr}}
-.col{display:flex;flex-direction:column;gap:16px;min-width:0}
-.card{background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:18px 18px 20px;min-width:0;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-.card h2{display:flex;align-items:center;gap:10px;font-size:15px;margin:0 0 4px;font-weight:600}
-.stepnum{width:26px;height:26px;border-radius:8px;background:rgba(45,212,191,.12);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none}
+/* ---------- Dual Column Workstation Grid Layout ---------- */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1100px){.main{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:14px 16px 16px;min-width:0;box-shadow:0 4px 18px rgba(0,0,0,.22)}
+.card h2{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 3px;font-weight:600}
+.stepnum{width:24px;height:24px;border-radius:7px;background:rgba(45,212,191,.12);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
 .stepnum.agent{background:rgba(168,85,247,.18);color:#d8b4fe}
 .stepnum.cyan{background:rgba(56,189,248,.16);color:var(--cyan)}
-.card .hint{font-size:12.5px;color:var(--muted);margin:0 0 12px}
-textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 13px;font-family:inherit;font-size:13.5px;resize:vertical;min-height:76px;line-height:1.7}
+.card .hint{font-size:12px;color:var(--muted);margin:0 0 10px}
+textarea{width:100%;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical;min-height:72px;line-height:1.6}
 textarea:focus{outline:none;border-color:var(--accent-dim)}
 .agent-mode textarea:focus{border-color:var(--agent-accent)}
-textarea.tall{min-height:140px}
-textarea.code-font{font-family:var(--mono);font-size:12.8px}
-.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
-label.chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer}
+textarea.tall{min-height:115px}
+textarea.code-font{font-family:var(--mono);font-size:12.4px}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+label.chk{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted);cursor:pointer}
 label.chk input{accent-color:var(--accent)}
-select.runtime-select{background:var(--panel-2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:8px 12px;font-family:inherit;font-size:13px}
+select.runtime-select{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;font-family:inherit;font-size:12.5px}
 
-/* ---------- output blocks ---------- */
-.blockwrap{margin-top:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.blockwrap.verify{border-color:rgba(45,212,191,.55);box-shadow:0 0 0 1px rgba(45,212,191,.15)}
-.blockwrap.verify-agent{border-color:rgba(168,85,247,.55);box-shadow:0 0 0 1px rgba(168,85,247,.15)}
-.blockwrap.verify .blockhead{background:rgba(45,212,191,.07);color:var(--accent)}
-.blockwrap.verify-agent .blockhead{background:rgba(168,85,247,.12);color:#e9d5ff}
-.stepnum.vnum{width:20px;height:20px;font-size:11.5px;border-radius:6px;margin-inline-end:8px}
+/* ---------- Workstation Tabs Bar (Right Column) ---------- */
+.ws-tabs-bar{display:flex;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.ws-tab-btn{background:transparent;border:none;color:var(--muted);border-radius:7px;padding:6px 12px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.14s}
+.ws-tab-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.ws-tab-btn.active{background:rgba(168,85,247,.2);color:#e9d5ff;border:1px solid rgba(168,85,247,.45);box-shadow:0 0 10px rgba(168,85,247,.2)}
+.ws-tab-badge{font-size:10.5px;background:rgba(168,85,247,.3);border-radius:999px;padding:1px 6px;color:#e9d5ff;font-family:var(--mono)}
 
-/* ---------- prompt-mode segmented toggle ---------- */
-.modewrap{margin:2px 0 14px}
-.seg{display:flex;gap:8px;background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:5px}
-.seg-btn{flex:1;display:flex;align-items:center;gap:10px;background:transparent;border:1px solid transparent;border-radius:9px;padding:8px 12px;cursor:pointer;font-family:inherit;color:var(--muted);transition:.14s;text-align:start}
-.seg-btn:hover{color:var(--text)}
-.seg-btn.active{background:rgba(45,212,191,.12);border-color:rgba(45,212,191,.5);color:var(--text)}
-.seg-ic{font-size:18px;flex:none}
-.seg-t{display:flex;flex-direction:column;line-height:1.25}
-.seg-t b{font-size:13px;font-weight:600}
-.seg-t span{font-size:11px;color:var(--faint)}
-.seg-btn.active .seg-t b{color:var(--accent)}
-.mode-note{margin:8px 2px 0;min-height:1px}
-.mode-note.warn{color:var(--warn)}
-.blockhead{display:flex;align-items:center;gap:10px;background:var(--panel-2);padding:8px 12px;border-bottom:1px solid var(--border-soft);font-size:12.5px;color:var(--muted)}
-.blockhead .spacer{flex:1}
-.copy-btn{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.35);color:var(--accent);border-radius:8px;padding:4px 13px;font-size:12.5px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.14s}
-.copy-btn:hover{background:rgba(45,212,191,.22)}
-.copy-btn.done{color:var(--green);border-color:rgba(74,222,128,.5);background:var(--green-bg)}
-.copy-btn.purple{background:rgba(168,85,247,.18);border-color:rgba(168,85,247,.45);color:#e9d5ff}
-.copy-btn.purple:hover{background:rgba(168,85,247,.3)}
-pre.block{margin:0;padding:12px 14px;max-height:320px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;unicode-bidi:plaintext;text-align:start}
+/* ---------- Live Task Progress & Stepper Tracker ---------- */
+.task-progress-wrap{background:var(--panel-2);border:1px solid rgba(168,85,247,.4);border-radius:10px;padding:10px 14px;margin-bottom:12px;animation:fadein .2s ease}
+.task-progress-head{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;color:#e9d5ff}
+.task-timer{font-family:var(--mono);font-size:12px;color:var(--cyan);background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);border-radius:6px;padding:2px 7px}
+.task-track{height:4px;width:100%;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:8px 0 6px}
+.task-bar-moving{height:100%;width:35%;background:linear-gradient(90deg,var(--agent-accent),var(--cyan),var(--accent));border-radius:999px;animation:progressMove 1.4s infinite ease-in-out}
+@keyframes progressMove{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
 
-/* ---------- Terminal & Artifacts Console ---------- */
-.terminal-wrap{background:#060a0f;border:1px solid #1e293b;border-radius:12px;overflow:hidden;margin-top:12px;box-shadow:inset 0 2px 8px rgba(0,0,0,.5)}
-.terminal-head{background:#0e1626;padding:8px 14px;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted);border-bottom:1px solid #1e293b}
-.terminal-dot{width:10px;height:10px;border-radius:50%;background:#475569}
+.stage-stepper{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.stage-step{font-size:11px;font-family:var(--mono);padding:2px 7px;border-radius:5px;background:var(--panel-3);color:var(--muted);border:1px solid var(--border)}
+.stage-step.active{color:var(--warn);border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.12);font-weight:600}
+.stage-step.done{color:var(--green);border-color:rgba(74,222,128,.4);background:var(--green-bg)}
+
+/* ---------- Terminal & Console Component ---------- */
+.terminal-wrap{background:#060a0f;border:1px solid #1e293b;border-radius:12px;overflow:hidden;margin-top:8px;box-shadow:inset 0 2px 8px rgba(0,0,0,.5);display:flex;flex-direction:column}
+.terminal-head{background:#0e1626;padding:7px 12px;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;color:var(--muted);border-bottom:1px solid #1e293b;flex-wrap:wrap}
+.terminal-dot{width:9px;height:9px;border-radius:50%;background:#475569;flex:none}
 .terminal-dot.r{background:#ef4444} .terminal-dot.y{background:#f59e0b} .terminal-dot.g{background:#10b981}
-.terminal-body{padding:12px 14px;max-height:360px;overflow:auto;font-family:var(--mono);font-size:12.4px;line-height:1.65;color:#e2e8f0;white-space:pre-wrap;word-break:break-word}
-.terminal-body .cmd-line{color:var(--cyan);font-weight:600;margin-bottom:6px}
+.terminal-body{padding:10px 12px;height:320px;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.6;color:#e2e8f0;white-space:pre-wrap;word-break:break-word}
+.terminal-body .cmd-line{color:var(--cyan);font-weight:600;margin-bottom:4px}
 .terminal-body .err-line{color:var(--red)}
 .terminal-body .succ-line{color:var(--green)}
 .terminal-body .dim-line{color:var(--faint)}
 
-.terminal-status-pill{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px}
+/* Terminal Maximized / Fullscreen Mode */
+.terminal-wrap.maximized{position:fixed;inset:16px;z-index:95;margin:0;border:1px solid var(--agent-accent);box-shadow:0 0 40px rgba(0,0,0,.85)}
+.terminal-wrap.maximized .terminal-body{height:calc(100vh - 80px);max-height:none}
+
+.terminal-status-pill{font-size:10.5px;font-family:var(--mono);padding:1px 6px;border-radius:5px;display:inline-flex;align-items:center;gap:4px}
 .terminal-status-pill.running{background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.35)}
 .terminal-status-pill.success{background:var(--green-bg);color:var(--green);border:1px solid rgba(74,222,128,.35)}
 .terminal-status-pill.failed{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.35)}
 
-.pulse-dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;animation:pdot 1s infinite alternate}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;animation:pdot 1s infinite alternate}
 @keyframes pdot{from{opacity:.3}to{opacity:1}}
 
-.artifacts-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;align-items:center}
-.art-link{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);color:var(--cyan);border-radius:8px;padding:4px 12px;font-size:12.5px;text-decoration:none;font-family:var(--mono);display:inline-flex;align-items:center;gap:6px;transition:.15s}
-.art-link:hover{background:rgba(56,189,248,.25)}
+/* ---------- Collapsible Round Accordions ---------- */
+.round-card{border:1px solid var(--border);border-radius:9px;margin-bottom:8px;overflow:hidden;background:var(--panel-2)}
+.round-head{padding:6px 10px;background:var(--panel-3);display:flex;align-items:center;gap:8px;font-size:12px;font-family:var(--mono);cursor:pointer;border-bottom:1px solid var(--border-soft);user-select:none}
+.round-head:hover{background:rgba(255,255,255,.05)}
+.round-body{padding:8px 10px;font-size:12px;line-height:1.55}
 
-/* ---------- file tree drawer ---------- */
-.tree-box{max-height:220px;overflow:auto;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin-top:10px;font-family:var(--mono);font-size:12px}
-.tree-item{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:6px}
-.tree-item:hover{background:rgba(255,255,255,.04)}
+/* ---------- Artifacts Bar ---------- */
+.artifacts-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;align-items:center}
+.art-link{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);color:var(--cyan);border-radius:7px;padding:3px 9px;font-size:12px;text-decoration:none;font-family:var(--mono);display:inline-flex;align-items:center;gap:5px;transition:.14s}
+.art-link:hover{background:rgba(56,189,248,.22)}
+
+/* ---------- File Tree Drawer ---------- */
+.tree-box{max-height:280px;overflow:auto;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:6px 8px;margin-top:8px;font-family:var(--mono);font-size:12px}
+.tree-item{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:6px;cursor:pointer;transition:.12s}
+.tree-item:hover{background:rgba(255,255,255,.04);border-color:rgba(168,85,247,.3)}
 .tree-item .tname{color:var(--text);flex:1;direction:ltr;text-align:left}
 .tree-item .tsize{color:var(--faint);font-size:11px}
 
-/* ---------- multi-file diff cards ---------- */
-.file-card{border:1px solid var(--border);border-radius:12px;margin-top:12px;overflow:hidden;background:var(--panel-2)}
-.file-card-head{padding:8px 12px;background:var(--panel-3);display:flex;align-items:center;gap:10px;font-size:13px;border-bottom:1px solid var(--border-soft)}
-.file-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;text-transform:uppercase}
+/* ---------- Multi-File Diff Cards ---------- */
+.file-card{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;background:var(--panel-2)}
+.file-card-head{padding:6px 10px;background:var(--panel-3);display:flex;align-items:center;gap:8px;font-size:12.5px;border-bottom:1px solid var(--border-soft)}
+.file-tag{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;text-transform:uppercase}
 .file-tag.create{background:var(--green-bg);color:var(--green);border:1px solid rgba(74,222,128,.3)}
 .file-tag.modify{background:var(--cyan-bg);color:var(--cyan);border:1px solid rgba(56,189,248,.3)}
 .file-tag.delete{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.3)}
 
-/* ---------- result ---------- */
-.empty{color:var(--faint);font-size:13.5px;text-align:center;padding:30px 10px}
-.explain{background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.25);border-radius:12px;padding:12px 15px;font-size:13.5px;margin-top:12px}
+/* ---------- Output Blocks & Prompts ---------- */
+.blockwrap{margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.blockwrap.verify{border-color:rgba(45,212,191,.55);box-shadow:0 0 0 1px rgba(45,212,191,.15)}
+.blockwrap.verify-agent{border-color:rgba(168,85,247,.55);box-shadow:0 0 0 1px rgba(168,85,247,.15)}
+.blockwrap.verify .blockhead{background:rgba(45,212,191,.07);color:var(--accent)}
+.blockwrap.verify-agent .blockhead{background:rgba(168,85,247,.12);color:#e9d5ff}
+.stepnum.vnum{width:18px;height:18px;font-size:10.5px;border-radius:5px;margin-inline-end:6px}
+
+.blockhead{display:flex;align-items:center;gap:8px;background:var(--panel-2);padding:7px 10px;border-bottom:1px solid var(--border-soft);font-size:12px;color:var(--muted)}
+.copy-btn{background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.35);color:var(--accent);border-radius:7px;padding:3px 10px;font-size:11.5px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.14s}
+.copy-btn:hover{background:rgba(45,212,191,.22)}
+.copy-btn.done{color:var(--green);border-color:rgba(74,222,128,.5);background:var(--green-bg)}
+.copy-btn.purple{background:rgba(168,85,247,.18);border-color:rgba(168,85,247,.45);color:#e9d5ff}
+.copy-btn.purple:hover{background:rgba(168,85,247,.3)}
+pre.block{margin:0;padding:10px 12px;max-height:280px;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-word;unicode-bidi:plaintext;text-align:start}
+
+/* ---------- Segmented Toggle ---------- */
+.modewrap{margin:2px 0 10px}
+.seg{display:flex;gap:6px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:4px}
+.seg-btn{flex:1;display:flex;align-items:center;gap:8px;background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 10px;cursor:pointer;font-family:inherit;color:var(--muted);transition:.14s;text-align:start}
+.seg-btn:hover{color:var(--text)}
+.seg-btn.active{background:rgba(45,212,191,.12);border-color:rgba(45,212,191,.5);color:var(--text)}
+.seg-ic{font-size:16px;flex:none}
+.seg-t{display:flex;flex-direction:column;line-height:1.2}
+.seg-t b{font-size:12.5px;font-weight:600}
+.seg-t span{font-size:10.5px;color:var(--faint)}
+.seg-btn.active .seg-t b{color:var(--accent)}
+.mode-note{margin:6px 2px 0;min-height:1px}
+
+/* ---------- Result & Diff Styling ---------- */
+.empty{color:var(--faint);font-size:13px;text-align:center;padding:24px 10px}
+.explain{background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.25);border-radius:10px;padding:10px 12px;font-size:13px;margin-top:10px}
 .explain.agent{background:var(--agent-bg);border-color:rgba(168,85,247,.35)}
-.explain .tag{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.4px;display:block;margin-bottom:4px}
+.explain .tag{font-size:10.5px;color:var(--accent);font-weight:700;letter-spacing:.4px;display:block;margin-bottom:3px}
 .explain.agent .tag{color:#d8b4fe}
-.banner{display:flex;gap:10px;align-items:center;background:var(--green-bg);border:1px solid rgba(74,222,128,.4);color:var(--green);border-radius:12px;padding:10px 15px;font-size:13.5px;font-weight:600;margin-top:12px}
+.banner{display:flex;gap:8px;align-items:center;background:var(--green-bg);border:1px solid rgba(74,222,128,.4);color:var(--green);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;margin-top:10px}
 .banner.preview{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.4);color:var(--warn)}
 .banner.error{background:var(--red-bg);border-color:rgba(248,113,113,.4);color:var(--red)}
-.splice{border:1px solid var(--border);border-radius:12px;margin-top:12px;overflow:hidden}
-.splice .shead{background:var(--panel-2);padding:7px 12px;font-size:12.5px;color:var(--muted);display:flex;gap:10px;align-items:center}
-.splice .shead b{color:var(--text)}
-.slabel{font-size:11px;font-weight:700;letter-spacing:.5px;padding:6px 12px 0}
-.slabel.rm{color:var(--red)} .slabel.ad{color:var(--green)}
-pre.sbody{margin:4px 0 0;padding:6px 14px 12px;font-family:var(--mono);font-size:12.4px;line-height:1.7;white-space:pre-wrap;word-break:break-word;unicode-bidi:plaintext;text-align:start;max-height:200px;overflow:auto}
-pre.sbody.rm{background:var(--red-bg)} pre.sbody.ad{background:var(--green-bg)}
-.delnote{padding:6px 14px 12px;font-size:12.5px;color:var(--muted);font-style:italic}
 
-/* ---------- diff ---------- */
-.diff{margin:0;padding:10px 0;max-height:340px;overflow:auto;font-family:var(--mono);font-size:12.2px;line-height:1.65;direction:ltr}
-.dl{padding:0 14px;white-space:pre-wrap;word-break:break-word;unicode-bidi:plaintext}
+.diff{margin:0;padding:8px 0;max-height:300px;overflow:auto;font-family:var(--mono);font-size:11.8px;line-height:1.6;direction:ltr}
+.dl{padding:0 12px;white-space:pre-wrap;word-break:break-word;unicode-bidi:plaintext}
 .dl.add{background:var(--green-bg);color:var(--green)}
 .dl.del{background:var(--red-bg);color:var(--red)}
 .dl.hunk{color:var(--accent);opacity:.9}
 .dl.meta{color:var(--faint)}
 .dl.ctx{color:var(--muted)}
 
-/* ---------- history ---------- */
-.hitem{border:1px solid var(--border);border-radius:12px;margin-top:10px;overflow:hidden}
-.hitem summary{cursor:pointer;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;list-style:none}
-.hitem summary::-webkit-details-marker{display:none}
-.hitem .time{font-size:11.5px;color:var(--faint);font-family:var(--mono);direction:ltr}
-.hitem .hint-i{font-size:13px;flex:1;min-width:160px}
-.hitem .sizes{font-size:11.5px;color:var(--muted)}
-.hbody{border-top:1px solid var(--border-soft);padding:4px 0 8px}
-
-/* ---------- modal ---------- */
-.overlay{position:fixed;inset:0;background:rgba(4,8,12,.78);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
-.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:660px;max-width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 16px 40px rgba(0,0,0,.6)}
-.modal h3{margin:0;padding:16px 20px 12px;font-size:16px}
-.mlist{overflow:auto;border-top:1px solid var(--border-soft);padding:10px 14px 16px;min-height:200px}
-.mfoot{padding:12px 20px 16px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border-soft);align-items:center}
-
-/* ---------- 1-Click Templates in Modal ---------- */
-.templates-section{padding:0 20px 14px}
-.templates-title{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
-.template-chips{display:flex;gap:8px;flex-wrap:wrap}
-.template-chip{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12.5px;color:var(--text);cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
-.template-chip:hover{border-color:var(--agent-accent);background:rgba(168,85,247,.12);transform:translateY(-1px)}
-
-/* ---------- project & backup cards ---------- */
-/* ---------- project, backup & skill cards ---------- */
-.proj-card, .backup-card, .skill-card{background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:10px;transition:.15s}
-.proj-card:hover, .backup-card:hover, .skill-card:hover{border-color:rgba(168,85,247,.45);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.proj-card-head, .backup-card-head, .skill-card-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.proj-name, .skill-name{font-weight:700;font-size:14px;color:var(--text);flex:1;direction:ltr;text-align:left}
-.proj-meta, .backup-meta, .skill-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.backup-time{font-family:var(--mono);font-size:12px;color:var(--cyan);font-weight:600}
-.backup-files, .skill-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.bf-pill, .skill-pill{font-size:11px;font-family:var(--mono);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:var(--text)}
-.skill-pill.pkg{border-color:rgba(45,212,191,.4);color:var(--accent);background:rgba(45,212,191,.08)}
-.skill-pill.kw{border-color:rgba(168,85,247,.4);color:#d8b4fe;background:rgba(168,85,247,.08)}
-.tag-runtime{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:rgba(168,85,247,.15);color:#d8b4fe;border:1px solid rgba(168,85,247,.35)}
-.tag-source{font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:rgba(56,189,248,.15);color:#7dd3fc;border:1px solid rgba(56,189,248,.3)}
-
-/* Key status telemetry */
-.key-status-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px;padding:4px 8px;background:var(--panel);border-radius:8px;border:1px solid var(--border)}
-.key-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:2px 7px;border-radius:5px}
+/* ---------- Key status telemetry ---------- */
+.key-status-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;padding:4px 8px;background:var(--panel);border-radius:7px;border:1px solid var(--border)}
+.key-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-family:var(--mono);padding:2px 6px;border-radius:4px}
 .key-badge.ready{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3)}
 .key-badge.cooldown{background:rgba(251,191,36,.12);color:var(--warn);border:1px solid rgba(251,191,36,.3)}
 .key-badge.invalid{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3)}
 
-/* ---------- toasts ---------- */
-#toasts{position:fixed;bottom:18px;inset-inline-end:18px;display:flex;flex-direction:column;gap:10px;z-index:100;max-width:420px}
-.toast{background:var(--panel);border:1px solid var(--border);border-inline-start:3px solid var(--accent);border-radius:12px;padding:11px 15px;font-size:13.5px;box-shadow:0 8px 30px rgba(0,0,0,.45);animation:tin .2s ease}
+/* ---------- Toasts ---------- */
+#toasts{position:fixed;bottom:16px;inset-inline-end:16px;display:flex;flex-direction:column;gap:8px;z-index:100;max-width:380px}
+.toast{background:var(--panel);border:1px solid var(--border);border-inline-start:3px solid var(--accent);border-radius:10px;padding:9px 13px;font-size:13px;box-shadow:0 8px 25px rgba(0,0,0,.45);animation:tin .2s ease}
 .toast.ok{border-inline-start-color:var(--green)}
 .toast.warn{border-inline-start-color:var(--warn)}
 .toast.error{border-inline-start-color:var(--red)}
 .toast.agent{border-inline-start-color:var(--agent-accent)}
-.toast-hint{margin-top:4px;font-size:12px;color:var(--muted)}
-.toast.out{opacity:0;transition:.35s}
+.toast-hint{margin-top:3px;font-size:11.5px;color:var(--muted)}
+.toast.out{opacity:0;transition:.3s}
 @keyframes tin{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
 
-/* ---------- env editor table ---------- */
-.env-table{width:100%;border-collapse:collapse;margin-top:10px}
-.env-table th{text-align:start;font-size:12px;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border)}
-.env-table td{padding:6px 10px;border-bottom:1px solid var(--border-soft)}
-.env-table input{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12.5px}
-.btn-icon{background:transparent;border:none;color:var(--faint);font-size:15px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:.14s}
-.btn-icon:hover{color:var(--red);background:var(--red-bg)}
+/* ---------- Modals ---------- */
+.overlay{position:fixed;inset:0;background:rgba(4,8,12,.8);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:14px;width:660px;max-width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 16px 40px rgba(0,0,0,.6)}
+.modal h3{margin:0;padding:14px 18px 10px;font-size:15px}
+.mlist{overflow:auto;border-top:1px solid var(--border-soft);padding:10px 14px 14px;min-height:180px}
+.mfoot{padding:10px 18px 14px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border-soft);align-items:center}
 
-footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
-.closed{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--muted);font-size:16px}
+.proj-card, .backup-card, .skill-card{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:8px;transition:.14s}
+.proj-card:hover, .backup-card:hover, .skill-card:hover{border-color:rgba(168,85,247,.45);transform:translateY(-1px)}
+.proj-card-head, .backup-card-head, .skill-card-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.proj-name, .skill-name{font-weight:700;font-size:13.5px;color:var(--text);flex:1;direction:ltr;text-align:left}
+.proj-meta, .backup-meta, .skill-meta{font-size:11.5px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag-runtime{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(168,85,247,.15);color:#d8b4fe;border:1px solid rgba(168,85,247,.35)}
+
+/* ---------- Bottom Statusbar ---------- */
+.bottom-statusbar{margin-top:16px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:12px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.status-indicator{display:inline-flex;align-items:center;gap:5px;color:var(--green)}
+.status-indicator .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.shortcuts-hint{display:inline-flex;gap:10px;margin-inline-start:auto}
+.kbd-pill{background:var(--panel-3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:10.5px;color:var(--text)}
+
+footer{margin-top:12px;font-size:11px;color:var(--faint);text-align:center}
+.closed{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--muted);font-size:15px}
 </style>
 </head>
 <body>
 <div class="wrap" id="app">
 
+  <!-- ============================================================ -->
+  <!-- HEADER & NAVIGATION                                         -->
+  <!-- ============================================================ -->
   <header>
     <div class="brand">
       <div class="logo" id="mainLogo">✂</div>
@@ -305,6 +292,7 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
       <button class="nav-tab" id="tabDocMode" data-i18n="tab_doc_mode">✂️ Document Mode</button>
       <button class="nav-tab agent-tab active" id="tabAgentMode" data-i18n="tab_agent_mode">🤖 Agent Mode</button>
     </div>
+    <button class="ghost-btn" id="btnToggleSound" title="Audio Chime (On/Off)">🔔</button>
     <button class="ghost-btn" id="langToggle" title="Language">فارسی</button>
     <button class="ghost-btn danger" id="btnQuit" data-i18n="quit">Quit</button>
   </header>
@@ -323,7 +311,7 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
     </section>
 
     <section class="filebar files-panel hidden" id="filesPanel">
-      <div class="files-head">
+      <div class="files-head" style="display:flex;align-items:center;font-size:11.5px;color:var(--faint);text-transform:uppercase;margin-bottom:8px">
         <span data-i18n="workspace">Your files</span>
         <span class="spacer" style="flex:1"></span>
         <button class="copy-btn" id="btnRefreshFiles" data-i18n="refresh">Refresh</button>
@@ -419,7 +407,7 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
       </div>
 
       <!-- Collapsible Custom Directory Input for Advanced Power Users -->
-      <div id="customPathRow" class="hidden" style="margin-top:10px;display:flex;gap:10px;align-items:center">
+      <div id="customPathRow" class="hidden" style="margin-top:8px;display:flex;gap:8px;align-items:center">
         <input id="agentDirPath" data-i18n-ph="agent_dir_ph" placeholder="Custom workspace path, e.g. C:\my_projects\custom_bot" spellcheck="false">
         <button class="btn sub" id="btnAgentOpenFolder" data-i18n="open">Open</button>
       </div>
@@ -431,17 +419,20 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
       <div class="chips" id="agentChipsRow"></div>
 
       <!-- Collapsible File Tree Drawer -->
-      <details id="agentTreeDetails" style="margin-top:10px">
-        <summary style="cursor:pointer;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:10px">
+      <details id="agentTreeDetails" style="margin-top:8px">
+        <summary style="cursor:pointer;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px">
           <span data-i18n="workspace_files">📂 View Workspace File Tree</span>
           <span class="spacer" style="flex:1"></span>
-          <button class="btn sub" id="btnTreeNewFile" style="padding:2px 10px;font-size:11.5px" data-i18n="new_file_btn">+ New File</button>
+          <button class="btn sub" id="btnTreeNewFile" style="padding:2px 8px;font-size:11px" data-i18n="new_file_btn">+ New File</button>
         </summary>
         <div class="tree-box" id="agentTreeList"></div>
       </details>
     </section>
 
+    <!-- Main Dual Column Workspace Grid -->
     <main class="main">
+      
+      <!-- LEFT COLUMN: Task Command Studio -->
       <div class="col">
         <!-- Agent Step 1: Goal & Prompt -->
         <section class="card">
@@ -449,9 +440,27 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
           <p class="hint" data-i18n="agent_step1_hint">Describe what the AI agent should create, write, or fix. It will generate multi-file code plans and execution commands.</p>
           <textarea id="agentGoal" class="tall" dir="auto" data-i18n-ph="agent_goal_ph" placeholder="e.g. Write a Python script using python-pptx to generate a 5-slide presentation on Artificial Intelligence, with nice styling and charts, then run it to create presentation.pptx"></textarea>
           
-          <div class="row" style="gap:14px;align-items:flex-end">
+          <!-- 1-Click Goal Starters Chips -->
+          <div class="goal-starters-row" id="goalStartersRow">
+            <span class="goal-starter-label">⚡ Starters:</span>
+            <span class="goal-starter-chip" data-goal="Write a complete Python script using python-pptx to generate a professional 5-slide presentation on Artificial Intelligence with modern dark styling and key takeaways, then run it to create presentation.pptx">📊 PPT Slides</span>
+            <span class="goal-starter-chip" data-goal="Write a Python script that reads or generates a dataset of sales metrics, computes monthly growth trends, saves a clean summary to summary.csv, and outputs key statistics.">📈 Data Analyzer</span>
+            <span class="goal-starter-chip" data-goal="Write a Python script that fetches and extracts headlines and summaries from a web page using urllib, saves the results to articles.json, and prints a formatted table.">🌐 Web Scraper</span>
+            <span class="goal-starter-chip" data-goal="Create a modular Python CLI tool with argument parsing, colorized logging, error recovery, and comprehensive unit tests, then run the test suite.">🛠️ CLI Tool</span>
+            <span class="goal-starter-chip" data-goal="Create a modular FastAPI application with REST endpoints, Pydantic schemas, error handling, and test endpoints, then verify it works.">⚡ FastAPI API</span>
+            <span class="goal-starter-chip" data-goal="Write comprehensive unit tests with test cases, edge cases, mocks, and assertions, then run the test runner to verify everything passes.">🧪 Unit Tests</span>
+            <span class="goal-starter-chip" data-goal="Create a Node.js script (index.js) that performs asynchronous data transformations, generates a mock API response saved to output.json, and logs benchmarks.">🟩 Node.js App</span>
+          </div>
+
+          <!-- Recent Goals History Strip -->
+          <div class="goal-starters-row hidden" id="recentGoalsRow" style="margin-top:5px">
+            <span class="goal-starter-label" data-i18n="recent_goals_label">🕓 Recent:</span>
+            <div id="recentGoalsList" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+          </div>
+
+          <div class="row" style="gap:10px;align-items:flex-end;margin-top:10px">
             <div>
-              <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px" data-i18n="runtime_label">Runtime Environment:</label>
+              <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px" data-i18n="runtime_label">Runtime Environment:</label>
               <select id="agentRuntime" class="runtime-select">
                 <option value="python" selected>🐍 Python (python script.py)</option>
                 <option value="node">🟩 Node.js (node index.js)</option>
@@ -459,209 +468,293 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
                 <option value="generic">⚙️ Generic / Custom</option>
               </select>
             </div>
-            <div style="flex:1;min-width:180px">
-              <label style="font-size:12px;color:#7dd3fc;display:block;margin-bottom:4px;font-weight:600" data-i18n="skills_select_label">🧩 Domain Skill:</label>
+            <div style="flex:1;min-width:160px">
+              <label style="font-size:11.5px;color:#7dd3fc;display:block;margin-bottom:3px;font-weight:600" data-i18n="skills_select_label">🧩 Domain Skill:</label>
               <select id="agentSkillSelect" class="runtime-select" style="width:100%;border-color:rgba(56,189,248,.4)">
                 <option value="__auto__" selected>✨ Auto-Detect Skills (from prompt)</option>
                 <option value="__none__">⚙️ Pure Generic (No domain skill)</option>
               </select>
             </div>
-            <label class="chk" style="margin-bottom:6px">
+            <label class="chk" style="margin-bottom:5px">
               <input type="checkbox" id="agentIncludeFiles" checked>
               <span data-i18n="include_files_chk">Embed files</span>
             </label>
           </div>
           
           <!-- Auto-detected skill badges row -->
-          <div id="detectedSkillsRow" class="chips hidden" style="margin-top:8px"></div>
+          <div id="detectedSkillsRow" class="chips hidden" style="margin-top:6px"></div>
 
           <!-- Autonomous Auto-Pilot Control Box -->
-          <div class="autopilot-box" style="margin-top:14px;background:var(--panel-2);border:1px solid rgba(168,85,247,.35);border-radius:12px;padding:12px 14px">
-            <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:#e9d5ff;font-size:13.5px;margin-bottom:8px">
+          <div class="autopilot-box" style="margin-top:12px;background:var(--panel-2);border:1px solid rgba(168,85,247,.35);border-radius:10px;padding:10px 12px">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:600;color:#e9d5ff;font-size:13px;margin-bottom:6px">
               <span>🤖 <span data-i18n="autopilot_title">Auto-Pilot Engine (Autonomous Multi-Round Loop)</span></span>
               <span class="spacer" style="flex:1"></span>
-              <span id="keyStatusBadge" class="chip agent hidden" style="font-size:11px;padding:2px 8px"></span>
+              <span id="keyStatusBadge" class="chip agent hidden" style="font-size:10.5px;padding:2px 7px"></span>
             </div>
 
             <!-- Auto-Pilot Explainer Banner -->
-            <div class="autopilot-explainer" style="font-size:12px;color:#d8b4fe;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;line-height:1.5">
+            <div class="autopilot-explainer" style="font-size:11.5px;color:#d8b4fe;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:7px;padding:6px 10px;margin-bottom:8px;line-height:1.45">
               💡 <span data-i18n="autopilot_explainer_text"><b>What is Auto-Pilot?</b> Auto-Pilot runs an autonomous multi-round loop: it asks the AI for the code plan, saves files to your workspace, executes commands, auto-installs missing dependencies with <code>pip</code>, and self-repairs any errors until the task is 100% finished!</span>
             </div>
 
-            <div id="autoPilotSettings" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px">
-              <div>
-                <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px" data-i18n="provider_label">AI Provider:</label>
-                <select id="apProvider" class="runtime-select" style="padding:6px 10px;font-size:12.5px">
-                  <option value="ollama" selected>🦙 Ollama (Local)</option>
-                  <option value="openai">⚡ OpenAI (ChatGPT)</option>
-                  <option value="anthropic">🧠 Anthropic (Claude)</option>
-                  <option value="gemini">✨ Google Gemini</option>
-                  <option value="groq">⚡ Groq (Llama 3.3)</option>
-                  <option value="deepseek">🐋 DeepSeek</option>
-                  <option value="openrouter">🌐 OpenRouter</option>
-                  <option value="custom">⚙️ Custom Base URL</option>
-                </select>
+            <!-- Collapsible Settings Accordion -->
+            <details id="apSettingsDetails" style="margin-bottom:8px" open>
+              <summary style="cursor:pointer;font-size:11.5px;color:#d8b4fe;font-weight:600;margin-bottom:6px">⚙️ <span data-i18n="provider_settings">AI Model & Provider Configuration</span></summary>
+              <div id="autoPilotSettings" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px">
+                <div>
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px" data-i18n="provider_label">AI Provider:</label>
+                  <select id="apProvider" class="runtime-select" style="padding:5px 8px;font-size:12px">
+                    <option value="ollama" selected>🦙 Ollama (Local)</option>
+                    <option value="openai">⚡ OpenAI (ChatGPT)</option>
+                    <option value="anthropic">🧠 Anthropic (Claude)</option>
+                    <option value="gemini">✨ Google Gemini</option>
+                    <option value="groq">⚡ Groq (Llama 3.3)</option>
+                    <option value="deepseek">🐋 DeepSeek</option>
+                    <option value="openrouter">🌐 OpenRouter</option>
+                    <option value="custom">⚙️ Custom Base URL</option>
+                  </select>
+                </div>
+                <div id="apModelWrap" style="flex:1;min-width:120px">
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px" data-i18n="model_label">Model:</label>
+                  <input id="apModel" value="llama3" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-family:var(--mono);font-size:12px">
+                </div>
+                <div id="apKeyWrap" class="hidden" style="flex:1;min-width:160px">
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px" data-i18n="apikey_label">API Key(s) (comma-separated):</label>
+                  <input id="apApiKey" type="password" placeholder="sk-key1, sk-key2..." style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-family:var(--mono);font-size:12px">
+                </div>
+                <div id="apBaseUrlWrap" class="hidden" style="flex:1;min-width:140px">
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px">Base URL:</label>
+                  <input id="apBaseUrl" placeholder="http://localhost:11434" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-family:var(--mono);font-size:12px">
+                </div>
+                <div style="width:90px">
+                  <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px" data-i18n="max_rounds_label">Rounds:</label>
+                  <select id="apMaxRounds" class="runtime-select" style="width:100%;padding:5px 6px;font-size:12px">
+                    <option value="1">1 round</option>
+                    <option value="2">2 rounds</option>
+                    <option value="3" selected>3 rounds</option>
+                    <option value="5">5 rounds</option>
+                  </select>
+                </div>
               </div>
-              <div id="apModelWrap" style="flex:1;min-width:130px">
-                <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px" data-i18n="model_label">Model:</label>
-                <input id="apModel" value="llama3" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12.5px">
-              </div>
-              <div id="apKeyWrap" class="hidden" style="flex:1;min-width:180px">
-                <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px" data-i18n="apikey_label">API Key(s) (comma-separated for rotation):</label>
-                <input id="apApiKey" type="password" placeholder="sk-key1, sk-key2..." style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12.5px">
-              </div>
-              <div id="apBaseUrlWrap" class="hidden" style="flex:1;min-width:160px">
-                <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px">Base URL:</label>
-                <input id="apBaseUrl" placeholder="http://localhost:11434" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12.5px">
-              </div>
-              <div style="width:95px">
-                <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px" data-i18n="max_rounds_label">Rounds:</label>
-                <select id="apMaxRounds" class="runtime-select" style="width:100%;padding:6px 8px;font-size:12.5px">
-                  <option value="1">1 round</option>
-                  <option value="2">2 rounds</option>
-                  <option value="3" selected>3 rounds</option>
-                  <option value="5">5 rounds</option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- Live Key Status Telemetry Row -->
-            <div id="keyStatusRow" class="key-status-row hidden"></div>
+              
+              <!-- Live Key Status Telemetry Row -->
+              <div id="keyStatusRow" class="key-status-row hidden"></div>
+            </details>
 
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-              <button class="btn agent-glow" id="btnRunAutoPilot" style="flex:1;padding:9px 16px;font-size:13px" data-i18n="btn_run_autopilot">⚡ Run Auto-Pilot (Autonomous Self-Repair)</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+              <button class="btn agent-glow" id="btnRunAutoPilot" style="flex:1;padding:8px 14px;font-size:12.5px" data-i18n="btn_run_autopilot">⚡ Run Auto-Pilot (Autonomous Self-Repair)</button>
+              <button class="btn danger hidden" id="btnStopAutoPilot" style="padding:8px 14px;font-size:12.5px" data-i18n="btn_stop_autopilot">⏹ Stop</button>
               <button class="btn sub" id="btnAgentGeneratePrompt" data-i18n="agent_generate">Generate Prompt Only</button>
             </div>
-            <span class="hint" id="agentPromptMeta" style="display:block;margin-top:6px"></span>
-          </div>
-
-          <div class="blockwrap hidden" id="agentPromptWrap" style="margin-top:14px">
-            <div class="blockhead">
-              <span data-i18n="agent_prompt_label">Surgeon Agent Protocol Prompt</span>
-              <span class="spacer"></span>
-              <button class="copy-btn purple" id="btnCopyAgentPrompt" data-i18n="copy">Copy</button>
-            </div>
-            <pre class="block" id="agentPromptText"></pre>
+            <span class="hint" id="agentPromptMeta" style="display:block;margin-top:4px;font-size:11px"></span>
           </div>
         </section>
 
-        <!-- Agent Step 2: AI Response & Apply -->
-        <section class="card">
-          <h2><span class="stepnum agent">2</span><span data-i18n="agent_step2">Paste AI Plan & Apply</span></h2>
-          <p class="hint" data-i18n="agent_step2_hint">Paste the AI's response (with &lt;EXPLANATION&gt;, @@FILE blocks, or JSON plan). The surgeon parses and splices files safely.</p>
+        <!-- Manual Plan & Splicing Accordion (Step 2) -->
+        <details id="manualPlanDetails" class="card" style="padding:10px 14px">
+          <summary style="cursor:pointer;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px">
+            <span class="stepnum agent">2</span>
+            <span data-i18n="agent_step2">Paste AI Plan & Apply (Manual Mode)</span>
+          </summary>
+          <p class="hint" style="margin-top:6px" data-i18n="agent_step2_hint">Paste the AI's response (with &lt;EXPLANATION&gt;, @@FILE blocks, or JSON plan). The surgeon parses and splices files safely.</p>
           <textarea id="agentResponse" class="tall code-font" dir="auto" data-i18n-ph="agent_resp_ph" placeholder="Paste the AI's agent response here..."></textarea>
           <div class="row">
             <button class="btn sub" id="btnAgentPreview" data-i18n="preview">Preview Plan</button>
             <button class="btn agent-btn" id="btnAgentApply" data-i18n="agent_apply">Apply Files & Run</button>
             <label class="chk"><input type="checkbox" id="agentAutoRun" checked><span data-i18n="auto_run_chk">Execute script after apply</span></label>
           </div>
-        </section>
+        </details>
       </div>
 
+      <!-- RIGHT COLUMN: Multi-View Dynamic Workstation -->
       <div class="col">
-        <!-- Agent Step 3: Execution Console & Artifacts -->
-        <section class="card">
-          <h2>
-            <span class="stepnum cyan">3</span>
-            <span data-i18n="agent_step3">Execution Console & Artifacts</span>
+        
+        <!-- Workstation Tab Navigator -->
+        <div class="ws-tabs-bar">
+          <button class="ws-tab-btn active" id="wsTabConsole">⚡ <span data-i18n="ws_console">Live Console</span></button>
+          <button class="ws-tab-btn" id="wsTabDiffs">📋 <span data-i18n="ws_diffs">Code Diffs</span> <span class="ws-tab-badge" id="wsDiffBadge">0</span></button>
+          <button class="ws-tab-btn" id="wsTabFiles">📂 <span data-i18n="ws_files">Workspace Files</span> <span class="ws-tab-badge" id="wsFilesBadge">0</span></button>
+          <button class="ws-tab-btn" id="wsTabProtocols">✍️ <span data-i18n="ws_protocols">Prompt & Verif</span></button>
+        </div>
+
+        <!-- Live Task Progress Bar (Animated during AutoPilot runs) -->
+        <div id="taskProgressWrap" class="task-progress-wrap hidden">
+          <div class="task-progress-head">
+            <span class="pulse-dot"></span>
+            <span id="taskProgressTitle">Auto-Pilot Active...</span>
             <span class="spacer" style="flex:1"></span>
-            <button class="btn sub" id="btnAgentRunManual" style="padding:4px 10px;font-size:12px" data-i18n="re_run">▶ Run Command</button>
-          </h2>
-          <p class="hint" data-i18n="agent_step3_hint">Real-time execution output, exit code status, and generated files / artifacts.</p>
+            <span class="task-timer" id="taskTimer">⏱ 00:00</span>
+          </div>
+          <div class="task-track">
+            <div class="task-bar-moving"></div>
+          </div>
+          <div class="stage-stepper" id="taskStageStepper">
+            <span class="stage-step" id="stageStepPrompt">1. 🧠 Thinking</span>
+            <span class="stage-step" id="stageStepSplice">2. ✍️ Splicing</span>
+            <span class="stage-step" id="stageStepExec">3. ⚙️ Executing</span>
+            <span class="stage-step" id="stageStepRepair">4. 🩹 Self-Healing</span>
+          </div>
+        </div>
 
-          <div id="agentPlanSummary"></div>
+        <!-- TAB 1 CONTENT: Live Terminal & Execution Console -->
+        <div id="wsPanelConsole">
+          <section class="card" style="padding:12px 14px">
+            <div id="agentPlanSummary"></div>
 
-          <div class="terminal-wrap">
-            <div class="terminal-head">
-              <span class="terminal-dot r"></span>
-              <span class="terminal-dot y"></span>
-              <span class="terminal-dot g"></span>
-              <span style="margin-left:6px" id="terminalTitle">terminal — idle</span>
-              <span class="spacer"></span>
-              <button class="copy-btn" id="btnCopyTerminal" style="padding:2px 8px;font-size:11px" data-i18n="copy_log">Copy Log</button>
+            <div class="terminal-wrap" id="mainTerminalWrap">
+              <div class="terminal-head">
+                <span class="terminal-dot r"></span>
+                <span class="terminal-dot y"></span>
+                <span class="terminal-dot g"></span>
+                <span style="margin-left:4px;font-weight:600" id="terminalTitle">terminal — idle</span>
+                <span class="spacer"></span>
+                <label class="chk" style="font-size:11px;margin-inline-end:4px" title="Keep scrolling to newest logs">
+                  <input type="checkbox" id="chkFollowLogs" checked>
+                  <span data-i18n="follow_logs">Follow</span>
+                </label>
+                <button class="copy-btn" id="btnMaximizeTerminal" title="Fullscreen Maximize">⛶</button>
+                <button class="copy-btn" id="btnClearTerminal" title="Clear console">🗑</button>
+                <button class="copy-btn" id="btnCopyTerminal" data-i18n="copy_log">Copy</button>
+                <button class="btn sub" id="btnAgentRunManual" style="padding:2px 8px;font-size:11px" data-i18n="re_run">▶ Run</button>
+              </div>
+              <div class="terminal-body" id="terminalOutput">
+                <span class="dim-line">Ready. Enter a goal and click ⚡ Run Auto-Pilot to launch autonomous multi-round creation.</span>
+              </div>
             </div>
-            <div class="terminal-body" id="terminalOutput">
-              <span class="dim-line">Ready. Paste AI plan in Step 2 to apply files and run.</span>
+
+            <!-- Artifacts Bar -->
+            <div class="artifacts-bar hidden" id="agentArtifactsBar">
+              <b style="font-size:12px" data-i18n="artifacts_label">Generated Artifacts:</b>
+              <div id="agentArtifactsList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
             </div>
-          </div>
 
-          <div class="artifacts-bar hidden" id="agentArtifactsBar">
-            <b style="font-size:12.5px" data-i18n="artifacts_label">Generated Artifacts:</b>
-            <div id="agentArtifactsList" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-          </div>
-
-          <!-- Step 4: Next-Round Verification Prompt -->
-          <div class="blockwrap verify-agent hidden" id="agentVerifyWrap" style="margin-top:14px">
-            <div class="blockhead">
-              <span class="stepnum vnum agent">✓</span>
-              <span data-i18n="agent_verif_title">Agent Verification Prompt — Paste Back to AI</span>
-              <span class="spacer"></span>
-              <button class="copy-btn purple" id="btnCopyAgentVerify" data-i18n="copy">Copy</button>
+            <!-- Next-Round Verification Prompt -->
+            <div class="blockwrap verify-agent hidden" id="agentVerifyWrap" style="margin-top:10px">
+              <div class="blockhead">
+                <span class="stepnum vnum agent">✓</span>
+                <span data-i18n="agent_verif_title">Agent Verification Prompt — Paste Back to AI</span>
+                <span class="spacer"></span>
+                <button class="copy-btn purple" id="btnCopyAgentVerify" data-i18n="copy">Copy</button>
+              </div>
+              <pre class="block" id="agentVerifyText"></pre>
             </div>
-            <pre class="block" id="agentVerifyText"></pre>
-          </div>
-        </section>
+          </section>
+        </div>
 
-        <!-- Multi-File Diff Preview Panel -->
-        <section class="card">
-          <h2><span class="stepnum">📋</span><span data-i18n="agent_diff_title">Plan & File Diff Preview</span></h2>
-          <div id="agentDiffContainer">
-            <div class="empty" data-i18n="agent_no_diff">No plan previewed yet. Click "Preview Plan" in Step 2 to inspect file actions.</div>
-          </div>
-        </section>
+        <!-- TAB 2 CONTENT: Plan & Code Diffs Review -->
+        <div id="wsPanelDiffs" class="hidden">
+          <section class="card">
+            <div style="display:flex;align-items:center;margin-bottom:8px">
+              <h2 style="margin:0"><span class="stepnum">📋</span><span data-i18n="agent_diff_title">Plan & File Diff Preview</span></h2>
+              <span class="spacer" style="flex:1"></span>
+              <button class="ghost-btn" id="btnToggleAllDiffs" style="padding:2px 8px;font-size:11px" data-i18n="toggle_diffs">↕ Toggle All</button>
+            </div>
+            <div id="agentDiffContainer">
+              <div class="empty" data-i18n="agent_no_diff">No plan previewed yet. Click "Preview Plan" in Step 2 to inspect file actions.</div>
+            </div>
+          </section>
+        </div>
+
+        <!-- TAB 3 CONTENT: Project File Tree Explorer -->
+        <div id="wsPanelFiles" class="hidden">
+          <section class="card">
+            <h2>
+              <span class="stepnum">📂</span>
+              <span data-i18n="workspace_files">Workspace Files</span>
+              <span class="spacer" style="flex:1"></span>
+              <button class="btn agent-btn" id="btnTabNewFile" style="padding:3px 10px;font-size:11.5px" data-i18n="new_file_btn">+ New File</button>
+            </h2>
+            <div style="margin-top:8px;margin-bottom:6px">
+              <input id="tabFileFilter" placeholder="🔍 Filter workspace files..." data-i18n-ph="filter_files_ph" style="width:100%;background:var(--panel-2);border:1px solid var(--border);border-radius:7px;padding:5px 9px;color:var(--text);font-family:var(--mono);font-size:11.5px">
+            </div>
+            <div id="agentTabFileList" class="tree-box" style="max-height:360px"></div>
+          </section>
+        </div>
+
+        <!-- TAB 4 CONTENT: Generated Protocols & Prompts -->
+        <div id="wsPanelProtocols" class="hidden">
+          <section class="card">
+            <h2><span class="stepnum">✍️</span><span data-i18n="agent_prompt_label">Surgeon Agent Protocol Prompt</span></h2>
+            <div class="blockwrap" id="agentPromptWrap" style="margin-top:8px">
+              <div class="blockhead">
+                <span>Surgeon Agent Protocol</span>
+                <span class="spacer"></span>
+                <button class="copy-btn purple" id="btnCopyAgentPrompt" data-i18n="copy">Copy</button>
+              </div>
+              <pre class="block" id="agentPromptText" style="max-height:360px"></pre>
+            </div>
+          </section>
+        </div>
+
       </div>
     </main>
+
+    <!-- Bottom Statusbar & Keyboard Shortcuts Cheatsheet -->
+    <div class="bottom-statusbar">
+      <span class="status-indicator">
+        <span class="status-dot"></span>
+        <span id="serverStatusText">Connected (127.0.0.1)</span>
+      </span>
+      <span style="color:var(--border)">|</span>
+      <span>⚡ Mode: <b style="color:#d8b4fe">Autonomous Agent</b></span>
+      <div class="shortcuts-hint">
+        <span><span class="kbd-pill">Ctrl+Enter</span> Run Auto-Pilot</span>
+        <span><span class="kbd-pill">Ctrl+M</span> Maximize Console</span>
+        <span><span class="kbd-pill">Esc</span> Close Modals</span>
+      </div>
+    </div>
   </div>
 
   <footer><span data-i18n="footer_note">Local only — the server runs on your machine (127.0.0.1). Your files never leave your computer.</span></footer>
 </div>
 
-<!-- Modular Skills Library & Management Modal -->
+<!-- ============================================================ -->
+<!-- MODALS                                                       -->
+<!-- ============================================================ -->
+
+<!-- Modular Skills Library Modal -->
 <div class="overlay hidden" id="skillsModal">
-  <div class="modal" style="width:760px">
-    <div style="display:flex;align-items:center;padding:16px 20px 10px">
+  <div class="modal" style="width:720px">
+    <div style="display:flex;align-items:center;padding:14px 18px 8px;gap:8px">
       <h3 style="margin:0;padding:0" data-i18n="skills_modal_title">🧩 Modular Skills Library</h3>
       <span class="spacer" style="flex:1"></span>
-      <button class="btn agent-btn" id="btnShowNewSkillForm" style="padding:6px 14px;font-size:13px" data-i18n="new_skill_btn">+ Add Skill</button>
+      <button class="btn agent-btn" id="btnShowNewSkillForm" style="padding:4px 12px;font-size:12px" data-i18n="new_skill_btn">+ Add Skill</button>
     </div>
-    <div style="padding:0 20px 10px;font-size:12.5px;color:var(--muted)" data-i18n="skills_modal_hint">
-      Skills provide domain-specific guidelines, code patterns, and auto-installed pip packages for specialized agent tasks.
-    </div>
-
-    <!-- Import / Create Tabs & Form -->
-    <div id="newSkillForm" class="hidden" style="background:var(--panel-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 20px;margin-bottom:6px">
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <button class="ghost-btn active" id="tabSkillFormManual">Custom Skill</button>
-        <button class="ghost-btn" id="tabSkillFormUrl">Import from URL</button>
+    
+    <!-- New Skill Form Accordion -->
+    <div id="newSkillForm" class="hidden" style="padding:10px 18px;background:var(--panel-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <button class="seg-btn active" id="tabSkillFormManual" style="padding:4px 10px;font-size:12px">✍️ Custom Skill</button>
+        <button class="seg-btn" id="tabSkillFormUrl" style="padding:4px 10px;font-size:12px">🌐 Import from URL</button>
       </div>
 
       <div id="skillFormManualBody">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
-          <input id="newSkillName" placeholder="Skill identifier (e.g. video_editor)" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:13px">
-          <input id="newSkillTitle" placeholder="Display Title (e.g. Video Editor)" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="newSkillName" placeholder="skill_identifier (e.g. fast_api)" style="flex:1;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12px">
+          <input id="newSkillTitle" placeholder="Human readable Title (e.g. FastAPI Web Service)" style="flex:1;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px">
         </div>
-        <input id="newSkillDesc" placeholder="Brief description of when to use this skill" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;margin-bottom:8px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
-          <input id="newSkillKeywords" placeholder="Keywords (comma-separated, e.g. video, movie, mp4)" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12.5px">
-          <input id="newSkillPackages" placeholder="Pip packages (comma-separated, e.g. moviepy, opencv-python)" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12.5px">
+        <input id="newSkillDesc" placeholder="Short description of capabilities" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="newSkillKeywords" placeholder="Keywords (comma-separated, e.g. api, fastapi, rest)" style="flex:1;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px">
+          <input id="newSkillPackages" placeholder="Pip packages (comma-separated, e.g. fastapi, uvicorn)" style="flex:1;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px">
         </div>
-        <textarea id="newSkillContent" placeholder="Markdown guidelines and code patterns for the AI..." style="width:100%;height:140px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12.5px;margin-bottom:10px"></textarea>
-        <div style="display:flex;gap:10px;justify-content:flex-end">
+        <textarea id="newSkillContent" placeholder="Skill instructions, patterns, and code guidelines..." style="width:100%;height:100px;font-size:12px;margin-bottom:8px"></textarea>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
           <button class="ghost-btn" id="btnCancelNewSkill" data-i18n="cancel">Cancel</button>
           <button class="btn agent-btn" id="btnSubmitNewSkill" data-i18n="save_skill">Save Skill</button>
         </div>
       </div>
 
       <div id="skillFormUrlBody" class="hidden">
-        <input id="importSkillUrl" placeholder="https://raw.githubusercontent.com/.../SKILL.md" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:13px;margin-bottom:10px">
-        <div style="display:flex;gap:10px;justify-content:flex-end">
+        <input id="importSkillUrl" placeholder="https://raw.githubusercontent.com/.../SKILL.md" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;justify-content:flex-end">
           <button class="ghost-btn" id="btnCancelImportSkill" data-i18n="cancel">Cancel</button>
-          <button class="btn agent-btn" id="btnSubmitImportSkill">📥 Download & Install</button>
+          <button class="btn agent-btn" id="btnSubmitImportSkill">Import Skill</button>
         </div>
       </div>
     </div>
 
-    <div class="mlist" id="skillsList" style="max-height:420px"></div>
+    <div class="mlist" id="skillsList"></div>
     <div class="mfoot">
       <span class="spacer" style="flex:1"></span>
       <button class="ghost-btn" id="btnCloseSkillsModal" data-i18n="close">Close</button>
@@ -669,48 +762,48 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
   </div>
 </div>
 
-<!-- Safe Projects Library & Creation Modal -->
+<!-- Projects Library Modal -->
 <div class="overlay hidden" id="projectsModal">
-  <div class="modal" style="width:720px">
-    <div style="display:flex;align-items:center;padding:16px 20px 10px">
+  <div class="modal" style="width:680px">
+    <div style="display:flex;align-items:center;padding:14px 18px 8px;gap:8px">
       <h3 style="margin:0;padding:0" data-i18n="projects_title">📚 Safe Projects Library</h3>
       <span class="spacer" style="flex:1"></span>
-      <button class="btn agent-btn" id="btnShowNewProjectForm" style="padding:6px 14px;font-size:13px" data-i18n="new_project_btn">+ New Project</button>
+      <button class="btn agent-btn" id="btnShowNewProjectForm" style="padding:4px 12px;font-size:12px" data-i18n="new_project_btn">+ New Project</button>
     </div>
 
-    <!-- Quick Templates Section -->
-    <div class="templates-section">
-      <div class="templates-title" data-i18n="templates_title">Quick 1-Click Templates:</div>
+    <!-- 1-Click Goal Templates in Modal -->
+    <div class="templates-section" style="padding:0 18px 10px">
+      <div class="templates-title" data-i18n="templates_title">Quick 1-Click Goal Templates:</div>
       <div class="template-chips">
-        <button class="template-chip" data-tpl="ppt">📊 PowerPoint Bot (Python)</button>
-        <button class="template-chip" data-tpl="scraper">🌐 Web Scraper (Python)</button>
-        <button class="template-chip" data-tpl="data">📈 Data Report & CSV</button>
-        <button class="template-chip" data-tpl="node">⚡ Node.js Service</button>
-        <button class="template-chip" data-tpl="cli">🤖 CLI Automation Tool</button>
+        <span class="template-chip" data-tpl="ppt">📊 PowerPoint Maker (python-pptx)</span>
+        <span class="template-chip" data-tpl="data">📈 Data Report & Analyzer</span>
+        <span class="template-chip" data-tpl="scraper">🌐 Web Data Scraper</span>
+        <span class="template-chip" data-tpl="node">🟩 Node.js Microservice</span>
+        <span class="template-chip" data-tpl="cli">🛠️ Modular Python CLI</span>
       </div>
     </div>
 
-    <!-- New Project Form (Collapsible) -->
-    <div id="newProjectForm" class="hidden" style="background:var(--panel-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 20px;margin-bottom:6px">
-      <div style="font-weight:600;font-size:13.5px;margin-bottom:8px;color:var(--agent-accent)" data-i18n="create_project_title">Create New Safe Project Workspace</div>
-      <div style="display:grid;grid-template-columns:1fr 140px;gap:10px;margin-bottom:8px">
-        <input id="newProjName" placeholder="Project name (e.g. presentation_bot, data_scraper)" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:13px">
-        <select id="newProjRuntime" class="runtime-select" style="padding:8px 10px;border-radius:8px">
+    <!-- New Project Form -->
+    <div id="newProjectForm" class="hidden" style="padding:12px 18px;background:var(--panel-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="newProjName" placeholder="Project Name (e.g. my_powerpoint_bot)" style="flex:2;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12px">
+        <select id="newProjRuntime" class="runtime-select" style="flex:1">
           <option value="python" selected>🐍 Python</option>
           <option value="node">🟩 Node.js</option>
+          <option value="bash">💻 Bash</option>
           <option value="generic">⚙️ Generic</option>
         </select>
       </div>
-      <input id="newProjDesc" placeholder="Brief description / goal (optional)" style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;margin-bottom:10px">
-      <div style="display:flex;gap:10px;justify-content:flex-end">
+      <input id="newProjDesc" placeholder="Short description of this project's goal..." style="width:100%;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px;margin-bottom:8px">
+      <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="ghost-btn" id="btnCancelNewProject" data-i18n="cancel">Cancel</button>
         <button class="btn agent-btn" id="btnSubmitNewProject" data-i18n="create_and_open">Create & Open</button>
       </div>
     </div>
 
-    <div class="mlist" id="projectsList" style="max-height:400px"></div>
+    <div class="mlist" id="projectsList"></div>
     <div class="mfoot">
-      <span class="hint" id="projectsRootPath" style="margin:0;font-size:11.5px;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis"></span>
+      <span class="hint" style="margin:0;font-size:11.5px;font-family:var(--mono)" id="projectsRootPath"></span>
       <span class="spacer" style="flex:1"></span>
       <button class="ghost-btn" id="btnCloseProjectsModal" data-i18n="close">Close</button>
     </div>
@@ -719,39 +812,39 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
 
 <!-- Backups & Rollback Modal -->
 <div class="overlay hidden" id="backupsModal">
-  <div class="modal" style="width:700px">
-    <h3 data-i18n="backups_title">💾 Safe Snapshot Backups & Rollback</h3>
-    <div style="padding:0 20px 8px;font-size:13px;color:var(--muted)" data-i18n="backups_hint">
-      Every AI creation or surgical edit saves an organized snapshot in <code>.surgeon/backups/</code> before touching files.
+  <div class="modal" style="width:680px">
+    <div style="padding:14px 18px 8px">
+      <h3 style="margin:0;padding:0" data-i18n="backups_title">💾 Safe Snapshot Backups & Rollback</h3>
+      <p class="hint" style="margin:4px 0 0" data-i18n="backups_hint">Every AI creation or surgical edit saves an organized snapshot in .surgeon/backups/ before touching files.</p>
     </div>
-    <div class="mlist" id="backupsList" style="max-height:420px"></div>
+    <div class="mlist" id="backupsList"></div>
     <div class="mfoot">
-      <span class="hint" id="backupsWorkspaceLabel" style="margin:0;font-size:11.5px;font-family:var(--mono)"></span>
+      <span class="hint" id="backupsWorkspaceLabel" style="margin:0;font-family:var(--mono);font-size:11.5px"></span>
       <span class="spacer" style="flex:1"></span>
       <button class="ghost-btn" id="btnCloseBackupsModal" data-i18n="close">Close</button>
     </div>
   </div>
 </div>
 
-<!-- Environment Variables (.env) Modal -->
+<!-- .env Variables Modal -->
 <div class="overlay hidden" id="envModal">
-  <div class="modal" style="width:680px">
-    <h3 data-i18n="env_title">🔐 Environment Variables (.env)</h3>
-    <div style="padding:0 20px 8px;font-size:13px;color:var(--muted)" data-i18n="env_hint">
-      Configure project environment variables. These are safely injected when running agent scripts.
+  <div class="modal" style="width:600px">
+    <div style="padding:14px 18px 8px">
+      <h3 style="margin:0;padding:0" data-i18n="env_title">🔐 Environment Variables (.env)</h3>
+      <p class="hint" style="margin:4px 0 0" data-i18n="env_hint">Configure project environment variables. These are safely injected when running agent scripts.</p>
     </div>
-    <div class="mlist" style="max-height:380px;padding:10px 20px">
-      <table class="env-table" id="envTable">
+    <div class="mlist" style="padding:0 18px 12px">
+      <table class="env-table" id="envTable" style="width:100%;border-collapse:collapse">
         <thead>
           <tr>
-            <th style="width:40%">KEY</th>
-            <th style="width:50%">VALUE</th>
+            <th style="width:40%;text-align:start;font-size:11.5px;color:var(--muted);padding:4px 8px">VARIABLE NAME</th>
+            <th style="width:50%;text-align:start;font-size:11.5px;color:var(--muted);padding:4px 8px">VALUE</th>
             <th style="width:10%"></th>
           </tr>
         </thead>
         <tbody id="envTableBody"></tbody>
       </table>
-      <button class="btn sub" id="btnAddEnvRow" style="margin-top:12px;padding:5px 12px;font-size:12.5px">+ Add Variable</button>
+      <button class="btn sub" id="btnAddEnvRow" style="margin-top:10px;padding:4px 10px;font-size:12px">+ Add Variable</button>
     </div>
     <div class="mfoot">
       <span class="spacer" style="flex:1"></span>
@@ -764,14 +857,14 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
 <!-- In-Browser File Editor Modal -->
 <div class="overlay hidden" id="fileEditorModal">
   <div class="modal" style="width:840px">
-    <div style="display:flex;align-items:center;padding:14px 20px 8px;gap:10px">
+    <div style="display:flex;align-items:center;padding:12px 18px 6px;gap:8px">
       <h3 style="margin:0;padding:0" id="editorFileTitle">📝 File Editor</h3>
-      <span class="hint" id="editorFileMeta" style="margin:0;font-family:var(--mono);font-size:12px"></span>
+      <span class="hint" id="editorFileMeta" style="margin:0;font-family:var(--mono);font-size:11.5px"></span>
       <span class="spacer" style="flex:1"></span>
-      <button class="ghost-btn danger" id="btnDeleteEditorFile" style="padding:4px 10px;font-size:12px" data-i18n="delete_file">🗑 Delete</button>
+      <button class="ghost-btn danger" id="btnDeleteEditorFile" style="padding:3px 8px;font-size:11.5px" data-i18n="delete_file">🗑 Delete</button>
     </div>
-    <div style="padding:0 20px 10px">
-      <textarea id="editorFileContent" class="code-font" style="width:100%;height:380px;font-size:13px;line-height:1.6" dir="auto"></textarea>
+    <div style="padding:0 18px 8px">
+      <textarea id="editorFileContent" class="code-font" style="width:100%;height:360px;font-size:12.5px;line-height:1.6" dir="auto"></textarea>
     </div>
     <div class="mfoot">
       <span class="spacer" style="flex:1"></span>
@@ -789,7 +882,7 @@ footer{margin-top:26px;font-size:11.5px;color:var(--faint);text-align:center}
 /* ------------------------------------------------------------------ i18n */
 var I18N = {
   en: {
-    app_tag:"AI-assisted surgical editing & Autonomous Agent",
+    app_tag:"AI-assisted precision editing & Autonomous Agent",
     tab_doc_mode:"✂️ Document Mode", tab_agent_mode:"🤖 Agent Mode",
     quit:"Quit", open:"Open", recent:"Recent:",
     choose_file:"📁 Choose file…", choose_folder:"📁 Choose Workspace Folder…", or_path:"or paste a path",
@@ -886,6 +979,7 @@ var I18N = {
     proj_files:"files", proj_backups:"backups",
     autopilot_title:"Auto-Pilot Engine (Autonomous Multi-Round Loop)",
     autopilot_explainer_text:"<b>What is Auto-Pilot?</b> Auto-Pilot runs an autonomous multi-round loop: it asks the AI for the code plan, saves files to your workspace, executes commands, auto-installs missing dependencies with <code>pip</code>, and self-repairs any errors until the task is 100% finished!",
+    provider_settings:"AI Model & Provider Configuration",
     provider_label:"AI Provider:", model_label:"Model:", apikey_label:"API Key(s) (comma-separated):", max_rounds_label:"Rounds:",
     btn_run_autopilot:"⚡ Run Auto-Pilot (Autonomous Self-Repair)",
     export_zip:"📦 Export .zip", env_vars:"🔐 .env", new_file_btn:"+ New File",
@@ -902,7 +996,14 @@ var I18N = {
     save_skill:"Save Skill",
     skill_saved:"Skill '{name}' saved successfully",
     skill_imported:"Skill '{name}' imported successfully from URL",
-    no_skills:"No skills found. Add or import your first modular skill!"
+    no_skills:"No skills found. Add or import your first modular skill!",
+    ws_console:"Live Console", ws_diffs:"Code Diffs", ws_files:"Workspace Files", ws_protocols:"Prompt & Verif",
+    follow_logs:"Follow",
+    btn_stop_autopilot:"⏹ Stop",
+    filter_files_ph:"🔍 Filter workspace files...",
+    recent_goals_label:"Recent Goals:",
+    toggle_diffs:"↕ Toggle All",
+    autopilot_stopped_user:"Auto-Pilot stopped by user"
   },
   fa: {
     app_tag:"ویرایش جراحیِ دقیق و عامل خودمختار برنامه‌نویسی",
@@ -1002,6 +1103,7 @@ var I18N = {
     proj_files:"فایل", proj_backups:"پشتیبان",
     autopilot_title:"موتور اتوپایلوت (چرخه خودکار خودترمیمی)",
     autopilot_explainer_text:"<b>اتوپایلوت چیست؟</b> اتوپایلوت یک چرخه چند مرحله‌ای کاملاً خودکار است: نقشه کد را از هوش مصنوعی می‌گیرد، فایل‌ها را در پوشه پروژه ذخیره می‌کند، دستورات را اجرا می‌نماید، پکیج‌های گم‌شده را خودکار با <code>pip</code> نصب می‌کند و در صورت بروز خطا تا زمان رفع کامل خودترمیمی می‌کند!",
+    provider_settings:"تنظیمات ارائه‌دهنده و مدل هوش مصنوعی",
     provider_label:"ارائه‌دهنده:", model_label:"مدل:", apikey_label:"کلید(های) API (با کاما جدا کنید):", max_rounds_label:"دورها:",
     btn_run_autopilot:"⚡ اجرای خودکار اتوپایلوت (با رفع خودکار خطا)",
     export_zip:"📦 خروجی ZIP", env_vars:"🔐 متغیرهای .env", new_file_btn:"+ فایل تازه",
@@ -1018,7 +1120,15 @@ var I18N = {
     save_skill:"ذخیره مهارت",
     skill_saved:"مهارت '{name}' با موفقیت ذخیره شد",
     skill_imported:"مهارت '{name}' با موفقیت از اینترنت دریافت شد",
-    no_skills:"هنوز مهارتی یافت نشد. اولین مهارت ماژولار خود را اضافه یا دریافت کنید!"
+    no_skills:"هنوز مهارتی یافت نشد. اولین مهارت ماژولار خود را اضافه یا دریافت کنید!",
+    ws_console:"کنسول زنده", ws_diffs:"تغییرات کد", ws_files:"فایل‌های پروژه", ws_protocols:"پرامپت و اعتبارسنجی",
+    follow_logs:"دنبال کردن لاگ",
+    btn_stop_autopilot:"⏹ توقف",
+    filter_files_ph:"🔍 جستجو و فیلتر فایل‌های پروژه...",
+    recent_goals_label:"هدف‌های اخیر:",
+    toggle_diffs:"↕ تغییر نمایش همه",
+    autopilot_stopped_user:"اتوپایلوت توسط کاربر متوقف شد"
+  }
   }
 };
 
@@ -1069,12 +1179,66 @@ function fmt(n){
   catch(e){ return String(n); }
 }
 
-/* ------------------------------------------------------------------ API */
-function api(path, payload){
+/* ------------------------------------------------------------------ Audio Chime Synthesizer */
+var soundEnabled = true;
+try {
+  var savedSound = localStorage.getItem("ts_sound_enabled");
+  if (savedSound !== null) soundEnabled = savedSound === "true";
+} catch(e){}
+
+function updateSoundUI(){
+  var btn = $("btnToggleSound");
+  if (btn) btn.textContent = soundEnabled ? "🔔" : "🔕";
+}
+
+function playChime(kind){
+  if (!soundEnabled) return;
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    var ctx = new AudioCtx();
+    var now = ctx.currentTime;
+    
+    var osc1 = ctx.createOscillator();
+    var osc2 = ctx.createOscillator();
+    var gain = ctx.createGain();
+    
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+    
+    if (kind === "error") {
+      osc1.frequency.setValueAtTime(260, now);
+      osc2.frequency.setValueAtTime(220, now);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc1.start(now); osc2.start(now);
+      osc1.stop(now + 0.35); osc2.stop(now + 0.35);
+    } else {
+      // Pleasant harmonic chime
+      osc1.frequency.setValueAtTime(587.33, now); // D5
+      osc2.frequency.setValueAtTime(880, now + 0.1); // A5
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc1.start(now); osc2.start(now + 0.1);
+      osc1.stop(now + 0.45); osc2.stop(now + 0.45);
+    }
+  } catch(e){}
+}
+
+/* ------------------------------------------------------------------ API Helper */
+function api(path, payload, extraOpts){
   var opts = {
     method: payload !== undefined && payload !== null ? "POST" : "GET",
     headers: { "Content-Type": "application/json" }
   };
+  if (extraOpts) {
+    for (var k in extraOpts) {
+      if (Object.prototype.hasOwnProperty.call(extraOpts, k)) {
+        opts[k] = extraOpts[k];
+      }
+    }
+  }
   if (payload !== undefined && payload !== null) opts.body = JSON.stringify(payload);
   return fetch(path, opts).then(function(res){
     return res.json().catch(function(){ return {}; }).then(function(data){
@@ -1089,14 +1253,11 @@ function api(path, payload){
   });
 }
 
-/* ------------------------------------------------------------------ Toast */
+/* ------------------------------------------------------------------ Toast Notifications */
 function toast(msg, kind, hint){
   if (!msg) return;
   var displayMsg = typeof msg === "object" ? (msg.error || msg.message || t("err")) : String(msg);
-  if (displayMsg === t("err") && !hint) {
-    // If message is just generic "Error" with no details, suppress redundant popup
-    return;
-  }
+  if (displayMsg === t("err") && !hint) return;
   var c = $("toasts");
   var d = el("div", "toast" + (kind ? " " + kind : ""));
   d.appendChild(el("div", null, displayMsg));
@@ -1104,8 +1265,8 @@ function toast(msg, kind, hint){
   c.appendChild(d);
   setTimeout(function(){
     d.classList.add("out");
-    setTimeout(function(){ d.remove(); }, 380);
-  }, 4200);
+    setTimeout(function(){ d.remove(); }, 320);
+  }, 3800);
 }
 
 function copyText(text, btn){
@@ -1118,7 +1279,7 @@ function copyText(text, btn){
     setTimeout(function(){
       btn.textContent = orig;
       btn.classList.remove("done");
-    }, 1800);
+    }, 1600);
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
@@ -1138,7 +1299,7 @@ function fallbackCopy(text, cb){
   if (cb) cb();
 }
 
-/* ------------------------------------------------------------------ Tabs */
+/* ------------------------------------------------------------------ App Mode Tabs */
 var currentTab = "agent";
 try {
   var savedTab = localStorage.getItem("ts_active_tab");
@@ -1166,6 +1327,24 @@ function switchTab(tab){
 
 $("tabDocMode").onclick = function(){ switchTab("doc"); };
 $("tabAgentMode").onclick = function(){ switchTab("agent"); };
+
+/* ------------------------------------------------------------------ Workstation Tabs (Right Column) */
+var currentWsTab = "console";
+function switchWorkstationTab(tab){
+  currentWsTab = tab;
+  var tabs = ["Console", "Diffs", "Files", "Protocols"];
+  tabs.forEach(function(tb){
+    var btn = $("wsTab" + tb);
+    var panel = $("wsPanel" + tb);
+    if (btn) btn.classList.toggle("active", tb.toLowerCase() === tab.toLowerCase());
+    if (panel) panel.classList.toggle("hidden", tb.toLowerCase() !== tab.toLowerCase());
+  });
+}
+
+$("wsTabConsole").onclick = function(){ switchWorkstationTab("console"); };
+$("wsTabDiffs").onclick = function(){ switchWorkstationTab("diffs"); };
+$("wsTabFiles").onclick = function(){ switchWorkstationTab("files"); };
+$("wsTabProtocols").onclick = function(){ switchWorkstationTab("protocols"); };
 
 /* ================================================================== */
 /* DOCUMENT MODE LOGIC                                                */
@@ -1223,9 +1402,7 @@ function openFile(showToast, opts){
       loadHistory();
       loadFiles();
     })
-    .catch(function(err){
-      toast(err.error || t("err"), "error", err.hint);
-    });
+    .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
 function pickFile(){
@@ -1414,9 +1591,7 @@ function loadProjectsList(callback){
       renderProjectsModalList(allProjects);
       if (callback) callback(allProjects);
     })
-    .catch(function(err){
-      toast(err.error || t("err"), "error", err.hint);
-    });
+    .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
 function renderProjectDropdown(projects){
@@ -1447,7 +1622,7 @@ function renderQuickProjectsBar(projects){
   var bar = $("agentQuickProjectsBar");
   bar.innerHTML = "";
   if (!projects || !projects.length) {
-    bar.innerHTML = '<span style="font-size:12px;color:var(--faint)">' + esc(t("no_projects")) + '</span>';
+    bar.innerHTML = '<span style="font-size:11.5px;color:var(--faint)">' + esc(t("no_projects")) + '</span>';
     return;
   }
   projects.slice(0, 6).forEach(function(p){
@@ -1474,8 +1649,8 @@ function renderProjectsModalList(projects){
     head.appendChild(el("span", "tag-runtime", p.runtime || "python"));
     
     var btnOpen = el("button", "btn agent-btn", t("switch_project"));
-    btnOpen.style.padding = "4px 12px";
-    btnOpen.style.fontSize = "12px";
+    btnOpen.style.padding = "3px 10px";
+    btnOpen.style.fontSize = "11.5px";
     btnOpen.onclick = function(){
       selectProject(p.path);
       closeProjectsModal();
@@ -1530,15 +1705,15 @@ function refreshAgentState(dir){
       renderAgentChips(st);
       renderAgentTree(st.files || []);
       
-      $("agentFilesCount").textContent = st.total_files || (st.files || []).length;
+      var fCount = st.total_files || (st.files || []).length;
+      $("agentFilesCount").textContent = fCount;
+      $("wsFilesBadge").textContent = fCount;
       $("agentBackupsCount").textContent = st.backups_count || 0;
       
       renderProjectDropdown(allProjects);
       renderQuickProjectsBar(allProjects);
     })
-    .catch(function(err){
-      toast(err.error || t("err"), "error", err.hint);
-    });
+    .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
 function renderAgentChips(st){
@@ -1562,24 +1737,28 @@ function renderAgentChips(st){
 
 function renderAgentTree(files){
   var box = $("agentTreeList");
-  box.innerHTML = "";
-  if (!files || !files.length) {
-    box.innerHTML = '<div style="color:var(--faint);padding:6px">' + esc(t("no_files")) + '</div>';
-    return;
-  }
-  files.forEach(function(f){
-    var item = el("div", "tree-item");
-    item.style.cursor = "pointer";
-    item.title = "Click to edit file";
-    var ic = f.path.match(/\.(py|js|ts|json|md|html|css|txt)$/i) ? "📄" : "📦";
-    item.appendChild(el("span", null, ic));
-    var nm = el("span", "tname", f.path);
-    item.appendChild(nm);
-    var sz = el("span", "tsize", (f.size / 1024).toFixed(1) + " KB (" + fmt(f.lines) + "L)");
-    item.appendChild(sz);
-    item.onclick = function(){ openFileEditor(f.path); };
-    box.appendChild(item);
-  });
+  var tabBox = $("agentTabFileList");
+  var renderTarget = function(b){
+    b.innerHTML = "";
+    if (!files || !files.length) {
+      b.innerHTML = '<div style="color:var(--faint);padding:6px">' + esc(t("no_files")) + '</div>';
+      return;
+    }
+    files.forEach(function(f){
+      var item = el("div", "tree-item");
+      item.title = "Click to edit file";
+      var ic = f.path.match(/\.(py|js|ts|json|md|html|css|txt)$/i) ? "📄" : "📦";
+      item.appendChild(el("span", null, ic));
+      var nm = el("span", "tname", f.path);
+      item.appendChild(nm);
+      var sz = el("span", "tsize", (f.size / 1024).toFixed(1) + " KB (" + fmt(f.lines) + "L)");
+      item.appendChild(sz);
+      item.onclick = function(){ openFileEditor(f.path); };
+      b.appendChild(item);
+    });
+  };
+  if (box) renderTarget(box);
+  if (tabBox) renderTarget(tabBox);
 }
 
 function exportProjectZip(){
@@ -1697,15 +1876,12 @@ function deleteEditorFile(){
     .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
-/* ------------------------------------------------------------------ Auto-Pilot Autonomous Loop */
 /* ------------------------------------------------------------------ Skills Subsystem */
 var availableSkills = [];
 var skillDetectTimer = null;
 
 function initSkillsSubsystem(){
   loadSkillsList();
-  
-  // Live auto-detect as user types
   $("agentGoal").addEventListener("input", function(){
     clearTimeout(skillDetectTimer);
     skillDetectTimer = setTimeout(detectSkillsFromGoal, 300);
@@ -1809,8 +1985,8 @@ function renderSkillsList(){
         head.appendChild(el("span", "tag-source", s.source || "built-in"));
         head.appendChild(el("span", "spacer"));
         var btnUse = el("button", "btn sub", "Use Skill");
-        btnUse.style.padding = "4px 10px";
-        btnUse.style.fontSize = "12px";
+        btnUse.style.padding = "3px 8px";
+        btnUse.style.fontSize = "11.5px";
         btnUse.onclick = function(){
           $("agentSkillSelect").value = s.name;
           closeSkillsModal();
@@ -1821,7 +1997,7 @@ function renderSkillsList(){
 
         if (s.description) {
           var desc = el("div", "proj-meta", esc(s.description));
-          desc.style.marginBottom = "6px";
+          desc.style.marginBottom = "4px";
           card.appendChild(desc);
         }
 
@@ -1891,7 +2067,7 @@ function submitImportSkill(){
   .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
-/* ------------------------------------------------------------------ Auto-Pilot Autonomous Loop & Multi-Key Rotation */
+/* ------------------------------------------------------------------ Auto-Pilot Multi-Key & Providers */
 function initAutoPilotProviders(){
   var savedProvider = localStorage.getItem("ts_ap_provider") || "ollama";
   $("apProvider").value = savedProvider;
@@ -1970,7 +2146,7 @@ function refreshKeyTelemetry(){
       badge.classList.remove("hidden");
       badge.textContent = "🔑 " + summary.ready + " ready / " + summary.total + " keys";
       
-      row.innerHTML = '<span style="font-size:11px;font-weight:600;color:var(--muted);margin-inline-end:6px">Active Pool:</span>';
+      row.innerHTML = '<span style="font-size:10.5px;font-weight:600;color:var(--muted);margin-inline-end:4px">Active Pool:</span>';
       (res.keys || []).forEach(function(k){
         var kb = el("span", "key-badge " + k.state, k.masked + " (" + k.state + ")");
         row.appendChild(kb);
@@ -1981,6 +2157,85 @@ function refreshKeyTelemetry(){
       badge.classList.add("hidden");
       row.classList.add("hidden");
     });
+}
+
+/* ------------------------------------------------------------------ Live Task Stopwatch Timer */
+var taskTimerInterval = null;
+var taskStartTime = 0;
+
+function startTaskProgress(title){
+  var wrap = $("taskProgressWrap");
+  wrap.classList.remove("hidden");
+  $("taskProgressTitle").textContent = title || "Auto-Pilot Active...";
+  taskStartTime = Date.now();
+  
+  if (taskTimerInterval) clearInterval(taskTimerInterval);
+  taskTimerInterval = setInterval(function(){
+    var elapsedMs = Date.now() - taskStartTime;
+    var totalSec = Math.floor(elapsedMs / 1000);
+    var mins = String(Math.floor(totalSec / 60)).padStart(2, "0");
+    var secs = String(totalSec % 60).padStart(2, "0");
+    $("taskTimer").textContent = "⏱ " + mins + ":" + secs;
+    document.title = "(⚙ " + mins + ":" + secs + ") Text Surgeon";
+  }, 250);
+}
+
+function stopTaskProgress(isSuccess){
+  if (taskTimerInterval) {
+    clearInterval(taskTimerInterval);
+    taskTimerInterval = null;
+  }
+  var elapsedMs = Date.now() - taskStartTime;
+  var totalSec = (elapsedMs / 1000).toFixed(1);
+  document.title = (isSuccess ? "(✓ Done " : "(✖ Stopped ") + totalSec + "s) Text Surgeon";
+  setTimeout(function(){ $("taskProgressWrap").classList.add("hidden"); }, 2000);
+}
+
+function setStageStep(stepKey){
+  var steps = ["Prompt", "Splice", "Exec", "Repair"];
+  steps.forEach(function(s){
+    var elStep = $("stageStep" + s);
+    if (elStep) elStep.className = "stage-step" + (s.toLowerCase() === stepKey.toLowerCase() ? " active" : "");
+  });
+}
+
+/* ------------------------------------------------------------------ Terminal Helpers */
+function toggleMaximizeTerminal(){
+  var wrap = $("mainTerminalWrap");
+  wrap.classList.toggle("maximized");
+  var isMax = wrap.classList.contains("maximized");
+  $("btnMaximizeTerminal").textContent = isMax ? "✕" : "⛶";
+  $("btnMaximizeTerminal").title = isMax ? "Restore Console" : "Fullscreen Maximize";
+}
+
+function clearTerminalOutput(){
+  $("terminalOutput").innerHTML = '<span class="dim-line">Console cleared.</span>';
+  lastTerminalLog = "";
+}
+
+function scrollTerminalToBottom(){
+  if ($("chkFollowLogs") && $("chkFollowLogs").checked) {
+    var term = $("terminalOutput");
+    term.scrollTop = term.scrollHeight;
+  }
+}
+
+/* ------------------------------------------------------------------ Auto-Pilot Execution Loop */
+var apAbortController = null;
+
+function stopAutoPilot(){
+  if (apAbortController) {
+    try { apAbortController.abort(); } catch(e){}
+    apAbortController = null;
+  }
+  stopTaskProgress(false);
+  playChime("error");
+  $("terminalTitle").textContent = "terminal — stopped by user";
+  var stopMsg = el("div", "err-line", "⏹ " + t("autopilot_stopped_user"));
+  $("terminalOutput").appendChild(stopMsg);
+  toast(t("autopilot_stopped_user"), "warn");
+  $("btnRunAutoPilot").disabled = false;
+  $("btnStopAutoPilot").classList.add("hidden");
 }
 
 function runAutoPilot(){
@@ -2014,11 +2269,21 @@ function runAutoPilot(){
     skillNames = [selectedSkill];
   }
 
+  saveRecentGoal(goal);
+  switchWorkstationTab("console");
   var btn = $("btnRunAutoPilot");
+  var stopBtn = $("btnStopAutoPilot");
   btn.disabled = true;
+  stopBtn.classList.remove("hidden");
+
+  startTaskProgress("Auto-Pilot Loop running...");
+  setStageStep("Prompt");
+
   $("terminalTitle").innerHTML = '<span class="pulse-dot"></span> Auto-Pilot Running...';
   $("terminalOutput").innerHTML = '<span class="dim-line">🚀 Launching Autonomous Auto-Pilot Loop (Provider: ' + esc(provider) + ', Model: ' + esc(model) + ', Max Rounds: ' + maxRounds + ')...</span>\n';
   lastTerminalLog = "";
+
+  apAbortController = new AbortController();
 
   api("/api/agent/autopilot", {
     workspace_dir: curDir,
@@ -2032,8 +2297,9 @@ function runAutoPilot(){
     max_rounds: maxRounds,
     skills: skillNames,
     auto_detect_skills: autoDetect
-  })
+  }, { signal: apAbortController.signal })
   .then(function(res){
+    stopTaskProgress(res.success);
     var term = $("terminalOutput");
     term.innerHTML = "";
     lastTerminalLog = "";
@@ -2044,41 +2310,56 @@ function runAutoPilot(){
     
     var hLine = el("div", res.success ? "succ-line" : "err-line", summaryHeader);
     hLine.style.fontWeight = "bold";
-    hLine.style.fontSize = "13.5px";
+    hLine.style.fontSize = "13px";
     hLine.style.marginBottom = "8px";
     term.appendChild(hLine);
     lastTerminalLog += summaryHeader + "\n\n";
 
     (res.rounds || []).forEach(function(rnd, idx){
-      var rBox = el("div", null);
-      rBox.style.marginBottom = "10px";
-      rBox.style.borderBottom = "1px dashed var(--border-soft)";
-      rBox.style.paddingBottom = "8px";
+      var rCard = el("div", "round-card");
+      var isLast = idx === (res.rounds.length - 1);
+      
+      var rHead = el("div", "round-head");
+      var stPill = rnd.execution && rnd.execution.success ? "✔ Exit 0" : (rnd.execution ? "✖ Exit " + rnd.execution.exit_code : "⚙ Applied");
+      rHead.innerHTML = '<span style="color:var(--cyan);font-weight:700">Round ' + rnd.round + '</span> · <span>' + stPill + '</span> · <span style="color:var(--muted)">' + (rnd.files ? rnd.files.length : 0) + ' files</span>';
+      rHead.appendChild(el("span", "spacer"));
+      var btnFold = el("span", "hint", isLast ? "▼" : "▶");
+      rHead.appendChild(btnFold);
+      rCard.appendChild(rHead);
 
-      var rHead = el("div", "cmd-line", "── Round " + rnd.round + " ──");
-      rBox.appendChild(rHead);
+      var rBody = el("div", "round-body");
+      if (!isLast && res.rounds.length > 1) {
+        rBody.style.display = "none";
+      }
+
+      rHead.onclick = function(){
+        var isHidden = rBody.style.display === "none";
+        rBody.style.display = isHidden ? "block" : "none";
+        btnFold.textContent = isHidden ? "▼" : "▶";
+      };
 
       if (rnd.explanation) {
         var rExp = el("div", null, "💡 " + rnd.explanation);
         rExp.style.color = "#d8b4fe";
         rExp.style.marginBottom = "4px";
-        rBox.appendChild(rExp);
+        rBody.appendChild(rExp);
       }
 
       if (rnd.files && rnd.files.length) {
         var rFiles = el("div", "dim-line", "Spliced files: " + rnd.files.join(", "));
-        rBox.appendChild(rFiles);
+        rBody.appendChild(rFiles);
       }
 
       if (rnd.execution) {
         var exec = rnd.execution;
         var rExec = el("div", null, "$ " + exec.command);
         rExec.style.color = "var(--cyan)";
-        rBox.appendChild(rExec);
-        if (exec.stdout) rBox.appendChild(el("div", null, exec.stdout));
-        if (exec.stderr) rBox.appendChild(el("div", "err-line", exec.stderr));
+        rBody.appendChild(rExec);
+        if (exec.stdout) rBody.appendChild(el("div", null, exec.stdout));
+        if (exec.stderr) rBody.appendChild(el("div", "err-line", exec.stderr));
       }
-      term.appendChild(rBox);
+      rCard.appendChild(rBody);
+      term.appendChild(rCard);
     });
 
     if (res.final_artifacts && res.final_artifacts.length) {
@@ -2092,20 +2373,110 @@ function runAutoPilot(){
     }
 
     if (res.success) {
+      playChime("success");
       toast("Auto-Pilot successfully built and verified task!", "ok");
     } else {
+      playChime("error");
       toast("Auto-Pilot finished with errors. Inspect terminal output.", "warn");
     }
+    scrollTerminalToBottom();
     refreshAgentState();
     refreshKeyTelemetry();
   })
   .catch(function(err){
+    if (err && (err.name === "AbortError" || String(err).indexOf("AbortError") !== -1)) {
+      // Handled in stopAutoPilot
+      return;
+    }
+    stopTaskProgress(false);
+    playChime("error");
     $("terminalTitle").textContent = "terminal — error";
     $("terminalOutput").innerHTML = '<span class="err-line">' + esc(err.error || t("err")) + '</span>';
     toast(err.error || t("err"), "error", err.hint);
   })
-  .then(function(){ btn.disabled = false; });
+  .then(function(){
+    btn.disabled = false;
+    stopBtn.classList.add("hidden");
+    apAbortController = null;
+  });
 }
+
+/* ------------------------------------------------------------------ Recent Goals History */
+function saveRecentGoal(goal){
+  if (!goal || !goal.trim()) return;
+  var g = goal.trim();
+  try {
+    var raw = localStorage.getItem("ts_recent_goals") || "[]";
+    var list = JSON.parse(raw);
+    list = list.filter(function(item){ return item !== g; });
+    list.unshift(g);
+    if (list.length > 6) list = list.slice(0, 6);
+    localStorage.setItem("ts_recent_goals", JSON.stringify(list));
+    renderRecentGoals();
+  } catch(e){}
+}
+
+function renderRecentGoals(){
+  var row = $("recentGoalsRow");
+  var listEl = $("recentGoalsList");
+  if (!row || !listEl) return;
+  var list = [];
+  try {
+    var raw = localStorage.getItem("ts_recent_goals") || "[]";
+    list = JSON.parse(raw);
+  } catch(e){}
+  listEl.innerHTML = "";
+  if (!list.length) {
+    row.classList.add("hidden");
+    return;
+  }
+  row.classList.remove("hidden");
+  list.forEach(function(item){
+    var pill = document.createElement("span");
+    pill.className = "recent-goal-chip";
+    pill.title = item;
+    pill.textContent = item;
+    pill.onclick = function(){
+      $("agentGoal").value = item;
+      toast("Goal loaded from history", "agent");
+      detectSkillsFromGoal();
+    };
+    listEl.appendChild(pill);
+  });
+}
+
+/* ------------------------------------------------------------------ Workspace Files Filter */
+function filterWorkspaceFiles(query){
+  var q = (query || "").toLowerCase().trim();
+  var box = $("agentTabFileList");
+  if (!box) return;
+  var items = box.querySelectorAll(".tree-item");
+  items.forEach(function(it){
+    var nameEl = it.querySelector(".tname");
+    var text = nameEl ? nameEl.textContent.toLowerCase() : it.textContent.toLowerCase();
+    if (!q || text.indexOf(q) !== -1) {
+      it.style.display = "flex";
+      if (q && nameEl) {
+        it.style.background = "rgba(168,85,247,.12)";
+      } else {
+        it.style.background = "";
+      }
+    } else {
+      it.style.display = "none";
+    }
+  });
+}
+
+/* ------------------------------------------------------------------ Toggle All Diffs */
+var diffsExpanded = true;
+function toggleAllDiffs(){
+  diffsExpanded = !diffsExpanded;
+  var diffBlocks = document.querySelectorAll("#agentDiffContainer .diff");
+  diffBlocks.forEach(function(b){
+    b.style.display = diffsExpanded ? "block" : "none";
+  });
+}
+
 
 function generateAgentPrompt(){
   var goal = $("agentGoal").value.trim();
@@ -2138,6 +2509,7 @@ function generateAgentPrompt(){
     $("agentPromptWrap").classList.remove("hidden");
     var meta = "≈ " + fmt(r.prompt_tokens) + " " + t("tokens");
     $("agentPromptMeta").textContent = meta;
+    switchWorkstationTab("protocols");
     toast(t("prompt_ready"), "ok");
     refreshAgentState();
   })
@@ -2158,6 +2530,7 @@ function previewAgentPlan(){
     renderAgentDiffPreview(r);
     var fCount = (r.changes || []).length;
     var sCount = (r.setup_commands || []).length;
+    switchWorkstationTab("diffs");
     toast(t("plan_parsed").replace("{f}", fCount).replace("{s}", sCount), "agent");
   })
   .catch(function(err){ toast(err.error || t("err"), "error", err.hint); })
@@ -2175,6 +2548,7 @@ function renderAgentDiffPreview(r){
   }
 
   var changes = r.changes || [];
+  $("wsDiffBadge").textContent = changes.length;
   if (!changes.length) {
     container.appendChild(el("div", "empty", t("agent_no_diff")));
     return;
@@ -2212,6 +2586,8 @@ function applyAndRunAgent(){
   if (!resp) { toast(t("need_response"), "warn"); return; }
   var btn = $("btnAgentApply");
   btn.disabled = true;
+  switchWorkstationTab("console");
+  startTaskProgress("Applying files & executing...");
   $("terminalTitle").innerHTML = '<span class="pulse-dot"></span> executing...';
   $("terminalOutput").innerHTML = '<span class="dim-line">Applying file actions transactionally & executing commands...</span>';
 
@@ -2222,11 +2598,16 @@ function applyAndRunAgent(){
     goal: $("agentGoal").value.trim()
   })
   .then(function(r){
+    stopTaskProgress(r.execution ? r.execution.success : true);
     renderAgentApplyResult(r);
     refreshAgentState();
     loadProjectsList();
+    if (r.execution && r.execution.success) playChime("success");
+    else if (r.execution && !r.execution.success) playChime("error");
   })
   .catch(function(err){
+    stopTaskProgress(false);
+    playChime("error");
     $("terminalTitle").textContent = "terminal — error";
     $("terminalOutput").innerHTML = '<span class="err-line">' + esc(err.error || t("err")) + '</span>';
     toast(err.error || t("err"), "error", err.hint);
@@ -2314,6 +2695,7 @@ function renderAgentApplyResult(r){
   if (r.apply_result) {
     renderAgentDiffPreview(r.apply_result);
   }
+  scrollTerminalToBottom();
 }
 
 function runAgentManualCommand(){
@@ -2371,8 +2753,8 @@ function loadBackupsList(){
         head.appendChild(el("span", "backup-time", b.timestamp || b.backup_id));
         head.appendChild(el("span", "spacer"));
         var btnRest = el("button", "btn sub", t("restore_btn"));
-        btnRest.style.padding = "4px 12px";
-        btnRest.style.fontSize = "12px";
+        btnRest.style.padding = "3px 10px";
+        btnRest.style.fontSize = "11.5px";
         btnRest.onclick = function(){ restoreBackupSnapshot(b.backup_id); };
         head.appendChild(btnRest);
         card.appendChild(head);
@@ -2442,7 +2824,7 @@ function submitNewProject(){
   .then(function(){ btn.disabled = false; });
 }
 
-// 1-Click Template Click Handlers
+// 1-Click Template Click Handlers in Modal
 document.querySelectorAll(".template-chip").forEach(function(chip){
   chip.onclick = function(){
     var key = chip.getAttribute("data-tpl");
@@ -2455,6 +2837,18 @@ document.querySelectorAll(".template-chip").forEach(function(chip){
     $("agentGoal").value = tpl.goal;
     $("agentRuntime").value = tpl.runtime;
     toast("Template loaded: " + tpl.desc, "agent");
+  };
+});
+
+// 1-Click Goal Starters in Studio
+document.querySelectorAll(".goal-starter-chip").forEach(function(chip){
+  chip.onclick = function(){
+    var g = chip.getAttribute("data-goal");
+    if (g) {
+      $("agentGoal").value = g;
+      toast("Goal starter loaded!", "agent");
+      detectSkillsFromGoal();
+    }
   };
 });
 
@@ -2485,6 +2879,13 @@ $("btnPreview").onclick = function(){ runApply(true); };
 $("btnApply").onclick = function(){ runApply(false); };
 $("btnRefreshHistory").onclick = loadHistory;
 $("btnQuit").onclick = quit;
+
+$("btnToggleSound").onclick = function(){
+  soundEnabled = !soundEnabled;
+  try { localStorage.setItem("ts_sound_enabled", String(soundEnabled)); } catch(e){}
+  updateSoundUI();
+  toast(soundEnabled ? "Sound chime enabled" : "Sound muted", "ok");
+};
 
 $("langToggle").onclick = function(){
   LANG = LANG === "fa" ? "en" : "fa";
@@ -2551,6 +2952,7 @@ $("btnTreeNewFile").onclick = function(e){
   e.stopPropagation();
   openFileEditor("");
 };
+$("btnTabNewFile").onclick = function(){ openFileEditor(""); };
 
 $("btnCloseEditorModal").onclick = closeFileEditor;
 $("btnSaveEditorFile").onclick = saveEditorFile;
@@ -2568,6 +2970,7 @@ $("btnAgentOpenFolder").onclick = function(){ selectProject($("agentDirPath").va
 $("agentDirPath").addEventListener("keydown", function(e){ if (e.key === "Enter") selectProject($("agentDirPath").value.trim()); });
 
 $("btnRunAutoPilot").onclick = runAutoPilot;
+if ($("btnStopAutoPilot")) $("btnStopAutoPilot").onclick = stopAutoPilot;
 $("btnAgentGeneratePrompt").onclick = generateAgentPrompt;
 $("btnCopyAgentPrompt").onclick = function(){ copyText(lastAgentPrompt, $("btnCopyAgentPrompt")); };
 $("btnAgentPreview").onclick = previewAgentPlan;
@@ -2575,6 +2978,10 @@ $("btnAgentApply").onclick = applyAndRunAgent;
 $("btnCopyAgentVerify").onclick = function(){ copyText(lastAgentVerification, $("btnCopyAgentVerify")); };
 $("btnAgentRunManual").onclick = runAgentManualCommand;
 $("btnCopyTerminal").onclick = function(){ copyText(lastTerminalLog || $("terminalOutput").innerText, $("btnCopyTerminal")); };
+$("btnClearTerminal").onclick = clearTerminalOutput;
+$("btnMaximizeTerminal").onclick = toggleMaximizeTerminal;
+if ($("btnToggleAllDiffs")) $("btnToggleAllDiffs").onclick = toggleAllDiffs;
+if ($("tabFileFilter")) $("tabFileFilter").oninput = function(){ filterWorkspaceFiles(this.value); };
 
 /* Keyboard Shortcuts */
 document.addEventListener("keydown", function(e){
@@ -2592,19 +2999,41 @@ document.addEventListener("keydown", function(e){
       e.preventDefault();
       runApply(false);
     }
+  } else if ((e.ctrlKey || e.metaKey) && (e.key === "m" || e.key === "M")) {
+    e.preventDefault();
+    toggleMaximizeTerminal();
+  } else if ((e.ctrlKey || e.metaKey) && e.key === "1") {
+    e.preventDefault();
+    switchWorkstationTab("console");
+  } else if ((e.ctrlKey || e.metaKey) && e.key === "2") {
+    e.preventDefault();
+    switchWorkstationTab("diffs");
+  } else if ((e.ctrlKey || e.metaKey) && e.key === "3") {
+    e.preventDefault();
+    switchWorkstationTab("files");
+  } else if ((e.ctrlKey || e.metaKey) && e.key === "4") {
+    e.preventDefault();
+    switchWorkstationTab("protocols");
   } else if (e.key === "Escape") {
-    closeProjectsModal();
-    closeBackupsModal();
-    closeSkillsModal();
-    closeEnvModal();
-    closeFileEditor();
+    if ($("mainTerminalWrap").classList.contains("maximized")) {
+      toggleMaximizeTerminal();
+    } else {
+      closeProjectsModal();
+      closeBackupsModal();
+      closeSkillsModal();
+      closeEnvModal();
+      closeFileEditor();
+    }
   }
 });
 
 applyLang();
+updateSoundUI();
 switchTab(currentTab);
 initProjectsHub();
 initAutoPilotProviders();
+renderRecentGoals();
 </script>
 </body>
 </html>
+
