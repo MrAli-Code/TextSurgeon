@@ -1522,6 +1522,63 @@ class TestWebAPISkillsAndKeys(unittest.TestCase):
             server.shutdown()
             server.server_close()
 
+    def test_memory_api_and_autopilot_integration(self) -> None:
+        import surgeon_web as web
+
+        port = web._pick_port(web.DEFAULT_HOST, 9860)
+        server = web._Server((web.DEFAULT_HOST, port), web.SurgeonRequestHandler)
+        th = threading.Thread(target=server.serve_forever, daemon=True)
+        th.start()
+        time.sleep(0.3)
+        base_url = f"http://127.0.0.1:{port}"
+
+        try:
+            ws_dir = os.path.join(self.tmp_dir, "mem_test_proj")
+            os.makedirs(ws_dir, exist_ok=True)
+            with open(os.path.join(ws_dir, "main.py"), "w", encoding="utf-8") as f:
+                f.write("print('hello world')\n")
+
+            # 1. GET /api/agent/memory
+            req = urllib.request.urlopen(f"{base_url}/api/agent/memory?dir={urllib.parse.quote(ws_dir)}")
+            mem_res = json.loads(req.read().decode("utf-8"))
+            self.assertIn("short_term", mem_res)
+            self.assertIn("long_term", mem_res)
+
+            # 2. POST /api/agent/memory/save
+            save_payload = json.dumps({
+                "dir": ws_dir,
+                "long_term": {
+                    "architecture": {"style": "modular"},
+                    "preferences": {"python": "3.11+"}
+                }
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                f"{base_url}/api/agent/memory/save",
+                data=save_payload,
+                headers={"Content-Type": "application/json"},
+            )
+            save_res = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
+            self.assertTrue(save_res.get("saved"))
+
+            # Verify saved content
+            req = urllib.request.urlopen(f"{base_url}/api/agent/memory?dir={urllib.parse.quote(ws_dir)}")
+            mem_res2 = json.loads(req.read().decode("utf-8"))
+            self.assertEqual(mem_res2["long_term"]["preferences"]["python"], "3.11+")
+
+            # 3. POST /api/agent/memory/clear
+            clear_payload = json.dumps({"dir": ws_dir}).encode("utf-8")
+            req = urllib.request.Request(
+                f"{base_url}/api/agent/memory/clear",
+                data=clear_payload,
+                headers={"Content-Type": "application/json"},
+            )
+            clear_res = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
+            self.assertTrue(clear_res.get("cleared"))
+
+        finally:
+            server.shutdown()
+            server.server_close()
+
 
 if __name__ == "__main__":
     unittest.main()

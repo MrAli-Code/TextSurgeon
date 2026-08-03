@@ -914,6 +914,297 @@ class ProjectManager:
         return ws.get_project_meta()
 
 
+class ProjectMemoryEngine:
+    """Manages dual-tier Short-Term (session events) and Long-Term (synthesized knowledge) project memory."""
+
+    def __init__(self, workspace_root: str) -> None:
+        self.root = os.path.abspath(workspace_root)
+        self.memory_dir = os.path.join(self.root, SURGEON_DIR_NAME, "memory")
+        self.short_term_file = os.path.join(self.memory_dir, "short_term.json")
+        self.long_term_file = os.path.join(self.memory_dir, "long_term.json")
+        self.memory_md_file = os.path.join(self.memory_dir, "MEMORY.md")
+        self.root_memory_md = os.path.join(self.root, SURGEON_DIR_NAME, "MEMORY.md")
+        os.makedirs(self.memory_dir, exist_ok=True)
+
+    def load_short_term(self) -> List[Dict[str, Any]]:
+        """Loads short-term memory event list (recent conversation / task turns)."""
+        if not os.path.isfile(self.short_term_file):
+            return []
+        try:
+            with open(self.short_term_file, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+                return data if isinstance(data, list) else []
+        except Exception:
+            return []
+
+    def record_short_term_event(
+        self,
+        event_type: str,
+        goal: str = "",
+        details: Optional[Dict[str, Any]] = None,
+        max_events: int = 20,
+    ) -> Dict[str, Any]:
+        """Appends an event (goal, plan, execution result, user directive, error) to STM."""
+        events = self.load_short_term()
+        entry = {
+            "id": f"evt_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().isoformat(),
+            "type": event_type,
+            "goal": goal,
+            "details": details or {},
+        }
+        events.append(entry)
+        events = events[-max_events:]
+        try:
+            with open(self.short_term_file, "w", encoding="utf-8") as fh:
+                json.dump(events, fh, indent=2, ensure_ascii=False)
+        except OSError:
+            pass
+        return entry
+
+    def clear_short_term(self) -> None:
+        """Clears short-term event buffer."""
+        try:
+            with open(self.short_term_file, "w", encoding="utf-8") as fh:
+                json.dump([], fh, indent=2)
+        except OSError:
+            pass
+
+    def load_long_term(self) -> Dict[str, Any]:
+        """Loads persistent long-term knowledge items."""
+        default_ltm: Dict[str, Any] = {
+            "project_name": os.path.basename(self.root),
+            "project_profile": {
+                "tech_stack": [],
+                "entrypoint": "",
+                "env_vars_needed": [],
+                "description": "",
+            },
+            "architecture_rules": [],
+            "solved_issues_and_gotchas": [],
+            "key_decisions": [],
+            "user_preferences": [],
+            "last_synthesized_at": None,
+        }
+        if not os.path.isfile(self.long_term_file):
+            return default_ltm
+        try:
+            with open(self.long_term_file, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+                if isinstance(data, dict):
+                    for k, v in default_ltm.items():
+                        if k not in data:
+                            data[k] = v
+                    return data
+                return default_ltm
+        except Exception:
+            return default_ltm
+
+    def save_long_term(self, ltm: Dict[str, Any]) -> None:
+        """Saves long-term memory and updates human-readable MEMORY.md."""
+        ltm["last_modified"] = datetime.now().isoformat()
+        try:
+            with open(self.long_term_file, "w", encoding="utf-8") as fh:
+                json.dump(ltm, fh, indent=2, ensure_ascii=False)
+            self._render_memory_md(ltm)
+        except OSError:
+            pass
+
+    def _render_memory_md(self, ltm: Dict[str, Any]) -> None:
+        """Renders human-readable markdown for MEMORY.md."""
+        lines = [
+            f"# Project Memory & Knowledge Base — {ltm.get('project_name', os.path.basename(self.root))}",
+            f"\n*Last updated: {ltm.get('last_modified', datetime.now().isoformat())}*",
+            "",
+            "## 1. Project Profile",
+            f"- **Description**: {ltm.get('project_profile', {}).get('description') or 'N/A'}",
+            f"- **Tech Stack**: {', '.join(ltm.get('project_profile', {}).get('tech_stack', [])) or 'Standard'}",
+            f"- **Main Entrypoint**: `{ltm.get('project_profile', {}).get('entrypoint', 'main.py')}`",
+        ]
+        env_vars = ltm.get("project_profile", {}).get("env_vars_needed", [])
+        if env_vars:
+            lines.append(f"- **Required Environment Variables**: {', '.join(f'`{v}`' for v in env_vars)}")
+        lines.append("")
+
+        lines.append("## 2. Architecture & Conventions")
+        arch = ltm.get("architecture_rules", [])
+        if arch:
+            for rule in arch:
+                lines.append(f"- {rule}")
+        else:
+            lines.append("- *(No specific rules recorded yet)*")
+        lines.append("")
+
+        lines.append("## 3. Solved Issues & Gotchas")
+        issues = ltm.get("solved_issues_and_gotchas", [])
+        if issues:
+            for item in issues:
+                if isinstance(item, dict):
+                    lines.append(f"- **{item.get('issue', 'Issue')}**: {item.get('solution', '')}")
+                else:
+                    lines.append(f"- {item}")
+        else:
+            lines.append("- *(No gotchas recorded yet)*")
+        lines.append("")
+
+        lines.append("## 4. Key Decisions & Preferences")
+        decisions = ltm.get("key_decisions", []) + ltm.get("user_preferences", [])
+        if decisions:
+            for dec in decisions:
+                lines.append(f"- {dec}")
+        else:
+            lines.append("- *(No decisions recorded yet)*")
+        lines.append("")
+
+        md_content = "\n".join(lines)
+        for p in (self.memory_md_file, self.root_memory_md):
+            try:
+                with open(p, "w", encoding="utf-8") as fh:
+                    fh.write(md_content)
+            except OSError:
+                pass
+
+    def get_memory_summary_for_prompt(self, max_chars: int = 3500) -> str:
+        """Produces an optimized context block for injection into LLM prompts."""
+        ltm = self.load_long_term()
+        stm = self.load_short_term()
+
+        sections: List[str] = []
+
+        # Long-term insights
+        prof = ltm.get("project_profile", {})
+        ltm_points: List[str] = []
+        if prof.get("description"):
+            ltm_points.append(f"Project Purpose: {prof['description']}")
+        if prof.get("tech_stack"):
+            ltm_points.append(f"Tech Stack: {', '.join(prof['tech_stack'])}")
+        if prof.get("env_vars_needed"):
+            ltm_points.append(f"Required .env Variables: {', '.join(prof['env_vars_needed'])}")
+
+        arch = ltm.get("architecture_rules", [])
+        if arch:
+            ltm_points.append("Architecture Rules: " + " | ".join(arch[:5]))
+
+        gotchas = ltm.get("solved_issues_and_gotchas", [])
+        if gotchas:
+            gotcha_strs = []
+            for g in gotchas[:5]:
+                if isinstance(g, dict):
+                    gotcha_strs.append(f"{g.get('issue')}: {g.get('solution')}")
+                else:
+                    gotcha_strs.append(str(g))
+            ltm_points.append("Past Solved Issues & Gotchas: " + " | ".join(gotcha_strs))
+
+        if ltm_points:
+            sections.append("### Persistent Knowledge (Long-Term Memory)\n" + "\n".join(f"- {p}" for p in ltm_points))
+
+        # Short-term recent turns
+        if stm:
+            stm_lines = []
+            for ev in stm[-4:]:
+                g = ev.get("goal", "")
+                typ = ev.get("type", "")
+                det = ev.get("details", {})
+                succ = det.get("success")
+                status = " (Success)" if succ is True else (" (Failed)" if succ is False else "")
+                stm_lines.append(f"- [{typ}{status}] {g[:140]}")
+                if det.get("error"):
+                    stm_lines.append(f"  Error encountered: {str(det['error'])[:120]}")
+            if stm_lines:
+                sections.append("### Recent Project Actions & Context (Short-Term Memory)\n" + "\n".join(stm_lines))
+
+        if not sections:
+            return ""
+
+        full_block = "\n## PROJECT MEMORY & KNOWLEDGE BASE\n" + "\n\n".join(sections) + "\n"
+        if len(full_block) > max_chars:
+            full_block = full_block[:max_chars] + "\n...(memory truncated for brevity)\n"
+        return full_block
+
+    def synthesize_memory(
+        self,
+        llm_config: "LLMConfig",
+        custom_instructions: str = "",
+    ) -> Dict[str, Any]:
+        """Synthesizes short-term memory + project state into long-term knowledge via LLM."""
+        stm = self.load_short_term()
+        ltm = self.load_long_term()
+        scan = scan_workspace_tree(self.root, max_files=60)
+        file_list = [f["path"] for f in scan.get("files", [])]
+
+        prompt = (
+            f"# PROJECT MEMORY SYNTHESIS PROTOCOL\n"
+            f"You are the Text Surgeon Memory Synthesizer. Consolidate recent session events, project files, "
+            f"and past lessons into persistent Long-Term Project Memory.\n\n"
+            f"## PROJECT NAME: {os.path.basename(self.root)}\n"
+            f"## EXISTING FILES IN WORKSPACE:\n{json.dumps(file_list, indent=2)}\n\n"
+            f"## CURRENT LONG-TERM MEMORY:\n{json.dumps(ltm, indent=2)}\n\n"
+            f"## RECENT SHORT-TERM EVENTS & GOALS:\n{json.dumps(stm, indent=2)}\n\n"
+        )
+        if custom_instructions:
+            prompt += f"## SPECIAL DIRECTIVES:\n{custom_instructions}\n\n"
+
+        prompt += (
+            "## OUTPUT FORMAT\n"
+            "Return ONLY a valid JSON object matching this exact schema (no markdown fences, no extra text):\n"
+            "{\n"
+            '  "project_profile": {\n'
+            '    "description": "Concise summary of what this project does",\n'
+            '    "tech_stack": ["python", "python-pptx", "python-telegram-bot"],\n'
+            '    "entrypoint": "main.py or bot.py",\n'
+            '    "env_vars_needed": ["TELEGRAM_BOT_TOKEN"]\n'
+            "  },\n"
+            '  "architecture_rules": [\n'
+            '    "Rule 1: Use python-dotenv to load environment variables",\n'
+            '    "Rule 2: Keep presentations in root and bot code modular"\n'
+            "  ],\n"
+            '  "solved_issues_and_gotchas": [\n'
+            '    {\n'
+            '      "issue": "Telegram Bot InvalidToken error",\n'
+            '      "solution": "Requires valid TELEGRAM_BOT_TOKEN in .env; placeholder will fail auth."\n'
+            "    }\n"
+            "  ],\n"
+            '  "key_decisions": [\n'
+            '    "Decision 1: User requested 10 slides with Persian text on last slide"\n'
+            "  ],\n"
+            '  "user_preferences": [\n'
+            '    "Preference 1: Use clean async handlers and proper logging"\n'
+            "  ]\n"
+            "}\n"
+        )
+
+        raw_reply = LLMClient.send_prompt(
+            prompt=prompt,
+            config=llm_config,
+            system_prompt="You are a precise JSON memory extraction and consolidation engine.",
+        )
+
+        cleaned = raw_reply.strip()
+        if "```json" in cleaned:
+            cleaned = cleaned.split("```json", 1)[1].split("```", 1)[0].strip()
+        elif "```" in cleaned:
+            cleaned = cleaned.split("```", 1)[1].split("```", 1)[0].strip()
+
+        try:
+            parsed = json.loads(cleaned)
+        except Exception:
+            m = re.search(r"\{.*\}", cleaned, re.DOTALL)
+            if m:
+                parsed = json.loads(m.group(0))
+            else:
+                raise AgentError(f"Failed to parse LLM memory synthesis response as JSON: {raw_reply[:300]}")
+
+        ltm["project_profile"] = parsed.get("project_profile", ltm.get("project_profile", {}))
+        ltm["architecture_rules"] = parsed.get("architecture_rules", ltm.get("architecture_rules", []))
+        ltm["solved_issues_and_gotchas"] = parsed.get("solved_issues_and_gotchas", ltm.get("solved_issues_and_gotchas", []))
+        ltm["key_decisions"] = parsed.get("key_decisions", ltm.get("key_decisions", []))
+        ltm["user_preferences"] = parsed.get("user_preferences", ltm.get("user_preferences", []))
+        ltm["last_synthesized_at"] = datetime.now().isoformat()
+
+        self.save_long_term(ltm)
+        return ltm
+
+
 class AgentWorkspace:
     """Manages files, structured .surgeon backups, logs, and execution within a project."""
 
@@ -925,6 +1216,7 @@ class AgentWorkspace:
         self.backups_dir = os.path.join(self.surgeon_dir, "backups")
         self.logs_dir = os.path.join(self.surgeon_dir, "logs")
         self.meta_file = os.path.join(self.surgeon_dir, "project.json")
+        self.memory = ProjectMemoryEngine(self.root)
 
         os.makedirs(self.backups_dir, exist_ok=True)
         os.makedirs(self.logs_dir, exist_ok=True)
@@ -1744,6 +2036,20 @@ _AGENT_PROTOCOL_RULES: Final[str] = """\
 You are operating as an autonomous software engineer and project agent.
 Your mission is to write complete, robust, ready-to-run code to achieve the user's goal.
 
+### ADAPTIVE TASK SIZING & NON-REDUNDANT MULTI-STEP PROTOCOL
+1. **Single-Step Tasks** (e.g., creating a PowerPoint, writing a script, creating a microservice, single-file edits):
+   - Deliver the complete, production-ready solution in a SINGLE comprehensive round.
+   - Provide all necessary @@FILE blocks and the execution @@RUN command immediately.
+   - Do NOT split simple tasks into artificial rounds.
+
+2. **Investigative & Complex Multi-Step Tasks** (e.g., "diagnose my PC", "analyze system bottlenecks", "multi-phase refactoring", "debug why network requests fail"):
+   - Use an adaptive multi-phase approach:
+     * Phase 1: Write and run a diagnostic probe / diagnostic script to gather system info or error metrics.
+     * Phase 2: In the subsequent round, analyze the diagnostic logs, formulate the fix, and apply the final solution.
+   - You may emit `@@STEP <current_step>/<total_steps>: <step_description>` in your explanation.
+
+3. **Zero Redundancy**: When the objective is achieved with exit code 0 and required outputs produced, stop immediately.
+
 ### MANDATORY RESPONSE FORMAT
 
 Your response must contain:
@@ -1774,8 +2080,9 @@ Brief overview of your solution, dependencies, and file layout.
 ### HARD CODING RULES:
 1. NO TRUNCATION / NO PLACEHOLDERS: Never write "# ... rest of code goes here ...". Write complete, runnable code.
 2. PURE & SAFE PATHS: Use relative file paths inside the workspace.
-3. ERROR HANDLING: Ensure scripts handle edge cases, create required folders if needed, and print informative progress messages to stdout.
-4. DELIMITERS: Write `<<<` and `>>>` on their own lines as plain ASCII.
+3. ERROR HANDLING: Ensure scripts handle edge cases, create required folders if needed, and print informative progress messages to stdout. If an error is fatal, do NOT swallow it with exit code 0; raise or exit(1) so the repair loop can heal it.
+4. ENVIRONMENT CONFIG: Always load environment variables (e.g. `python-dotenv`) for credentials/tokens instead of hardcoding placeholders.
+5. DELIMITERS: Write `<<<` and `>>>` on their own lines as plain ASCII.
 """
 
 
@@ -1788,6 +2095,7 @@ class AgentPromptBuilder:
         workspace_root: str,
         runtime: str = "python",
         include_workspace_files: bool = True,
+        include_memory: bool = True,
         skill_names: Optional[Sequence[str]] = None,
         auto_detect_skills: bool = True,
     ) -> str:
@@ -1798,6 +2106,7 @@ class AgentPromptBuilder:
             workspace_root: Target project folder.
             runtime: Preferred language environment ('python', 'node', 'shell', etc.).
             include_workspace_files: Whether to inspect and embed existing workspace files.
+            include_memory: Whether to attach project Short-Term and Long-Term Memory.
             skill_names: Explicit skill names to apply.
             auto_detect_skills: If True and skill_names is empty, matches keywords automatically.
 
@@ -1827,6 +2136,12 @@ class AgentPromptBuilder:
             goal.strip(),
             "\n",
         ]
+
+        if include_memory:
+            mem_engine = ProjectMemoryEngine(workspace_root)
+            mem_block = mem_engine.get_memory_summary_for_prompt()
+            if mem_block:
+                blocks.append(mem_block)
 
         if active_skills:
             blocks.append("\n## SPECIALIZED SKILLS & DOMAIN GUIDELINES\n")
@@ -2055,13 +2370,17 @@ _DAY_SECONDS: Final[int] = 86400
 
 # Model quota metadata from Nexus registry
 NEXUS_MODEL_CAPACITIES: Final[Dict[str, Dict[str, int]]] = {
+    "gemini-2.5-flash": {"rpm": 15, "rpd": 1500},
+    "gemini-2.5-flash-lite": {"rpm": 15, "rpd": 1500},
+    "gemini-2.0-flash": {"rpm": 15, "rpd": 1500},
+    "gemini-1.5-flash": {"rpm": 15, "rpd": 1500},
+    "gemini-1.5-pro": {"rpm": 5, "rpd": 50},
+    "gemini-2.5-pro": {"rpm": 5, "rpd": 50},
     "gemini-3.1-flash-lite": {"rpm": 15, "rpd": 500},
     "gemini-3.5-flash-lite": {"rpm": 15, "rpd": 500},
     "gemini-3.6-flash": {"rpm": 5, "rpd": 20},
     "gemini-3.5-flash": {"rpm": 5, "rpd": 20},
     "gemini-3-flash": {"rpm": 5, "rpd": 20},
-    "gemini-2.5-flash": {"rpm": 5, "rpd": 20},
-    "gemini-2.5-flash-lite": {"rpm": 10, "rpd": 20},
 }
 
 
@@ -2673,6 +2992,7 @@ class AutoPilotEngine:
         llm_config: LLMConfig,
         runtime: str = "python",
         max_rounds: int = 3,
+        include_memory: bool = True,
         skill_names: Optional[Sequence[str]] = None,
         auto_detect_skills: bool = True,
         on_round_callback: Optional[Callable[[Dict[str, Any]], None]] = None,
@@ -2684,6 +3004,7 @@ class AutoPilotEngine:
             goal=goal,
             workspace_root=workspace_root,
             runtime=runtime,
+            include_memory=include_memory,
             skill_names=skill_names,
             auto_detect_skills=auto_detect_skills,
         )
@@ -2761,6 +3082,16 @@ class AutoPilotEngine:
 
                 # If successful, exit loop!
                 if exec_res.success:
+                    ws.memory.record_short_term_event(
+                        event_type="goal_completed",
+                        goal=goal,
+                        details={
+                            "rounds_completed": round_idx,
+                            "artifacts": exec_res.artifacts_found,
+                            "command": exec_res.command,
+                            "duration_sec": round_info.get("duration_sec", 0.0),
+                        },
+                    )
                     return {
                         "status": "success",
                         "success": True,
@@ -2784,6 +3115,11 @@ class AutoPilotEngine:
                 round_info["duration_sec"] = time.perf_counter() - round_start
                 rounds_history.append(round_info)
                 ws.record_round(round_info)
+                ws.memory.record_short_term_event(
+                    event_type="auto_pilot_error",
+                    goal=goal,
+                    details={"error": str(exc), "round": round_idx},
+                )
                 if on_round_callback:
                     on_round_callback(round_info)
 

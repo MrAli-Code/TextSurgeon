@@ -397,6 +397,7 @@ footer{margin-top:12px;font-size:11px;color:var(--faint);text-align:center}
           </select>
         </div>
 
+        <button class="btn sub" id="btnOpenMemoryModal" data-i18n="memory_btn">🧠 Memory (<span id="agentMemoryCount">0</span>)</button>
         <button class="btn sub" id="btnOpenSkillsModal" data-i18n="skills_btn">🧩 Skills (<span id="agentSkillsCount">0</span>)</button>
         <button class="btn sub" id="btnOpenProjectsModal" data-i18n="safe_projects">📚 All Projects (<span id="agentProjectsTotal">0</span>)</button>
         <button class="btn sub" id="btnOpenBackupsModal" data-i18n="backups_btn">💾 Backups (<span id="agentBackupsCount">0</span>)</button>
@@ -475,6 +476,10 @@ footer{margin-top:12px;font-size:11px;color:var(--faint);text-align:center}
                 <option value="__none__">⚙️ Pure Generic (No domain skill)</option>
               </select>
             </div>
+            <label class="chk" style="margin-bottom:5px" title="Attach project short-term & long-term memory">
+              <input type="checkbox" id="agentAttachMemory" checked>
+              <span data-i18n="attach_memory_chk">🧠 Memory</span>
+            </label>
             <label class="chk" style="margin-bottom:5px">
               <input type="checkbox" id="agentIncludeFiles" checked>
               <span data-i18n="include_files_chk">Embed files</span>
@@ -874,6 +879,66 @@ footer{margin-top:12px;font-size:11px;color:var(--faint);text-align:center}
   </div>
 </div>
 
+<!-- Project Memory Hub Modal -->
+<div class="overlay hidden" id="memoryModal">
+  <div class="modal" style="width:780px">
+    <div style="display:flex;align-items:center;padding:14px 18px 8px;gap:8px">
+      <h3 style="margin:0;padding:0" data-i18n="memory_modal_title">🧠 Project Memory Hub (Nexus Logic)</h3>
+      <span class="spacer" style="flex:1"></span>
+      <span class="chip agent" id="memoryModalCountBadge" style="font-size:11px">0 short-term events</span>
+    </div>
+    
+    <div style="padding:0 18px 10px;display:flex;gap:6px;border-bottom:1px solid var(--border)">
+      <button class="seg-btn active" id="tabMemLtm" style="padding:5px 12px;font-size:12px">🧠 Long-Term Knowledge (MEMORY.md)</button>
+      <button class="seg-btn" id="tabMemStm" style="padding:5px 12px;font-size:12px">⚡ Short-Term Events</button>
+      <button class="seg-btn" id="tabMemSynth" style="padding:5px 12px;font-size:12px">🤖 AI Memory Synthesis</button>
+    </div>
+
+    <!-- Tab 1: Long-Term Knowledge -->
+    <div id="memLtmBody" style="padding:12px 18px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:12px;color:var(--muted)">Synthesized architectural profile, conventions, and solved gotchas:</span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn sub" id="btnToggleMemRawJson" style="padding:2px 8px;font-size:11px">JSON / Markdown View</button>
+      </div>
+      <div id="memMdRender" class="tree-box" style="max-height:340px;overflow-y:auto;padding:12px;font-size:12.5px;line-height:1.6;background:var(--panel-2);border-radius:8px"></div>
+      <div id="memJsonWrap" class="hidden" style="margin-top:8px">
+        <textarea id="memJsonContent" class="code-font" style="width:100%;height:280px;font-size:12px;padding:8px" placeholder="Long-term JSON..."></textarea>
+        <button class="btn agent-btn" id="btnSaveMemJson" style="margin-top:6px;padding:4px 12px;font-size:12px">Save JSON</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Short-Term Events -->
+    <div id="memStmBody" class="hidden" style="padding:12px 18px">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:var(--muted)">Recent goals, diagnostic probes, terminal runs, and error recoveries:</span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="ghost-btn danger" id="btnClearShortTermMem" style="padding:2px 8px;font-size:11px">🗑 Clear Short-Term</button>
+      </div>
+      <div id="memStmList" class="mlist" style="max-height:320px;padding:0"></div>
+    </div>
+
+    <!-- Tab 3: AI Memory Synthesis -->
+    <div id="memSynthBody" class="hidden" style="padding:12px 18px">
+      <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#d8b4fe">
+        💡 <b>Nexus Memory Consolidation:</b> Runs the configured AI engine to parse your workspace files and recent short-term session events, synthesizing long-term rules, project structure, and solved gotchas into a persistent <code>MEMORY.md</code> document.
+      </div>
+      <label style="font-size:11.5px;color:var(--muted);display:block;margin-bottom:4px">Custom Synthesis Instructions (Optional):</label>
+      <textarea id="memSynthCustomPrompt" style="width:100%;height:80px;font-size:12px;margin-bottom:10px" placeholder="e.g. Focus on Telegram token handling conventions and python-pptx slide layout rules..."></textarea>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn agent-glow" id="btnRunMemSynthesis" style="padding:8px 16px;font-size:12.5px">⚡ Consolidate & Synthesize Memory</button>
+        <span id="memSynthStatus" class="hint" style="font-size:11.5px"></span>
+      </div>
+    </div>
+
+    <div class="mfoot">
+      <span class="hint" style="margin:0;font-family:var(--mono);font-size:11.5px" id="memoryWorkspaceLabel"></span>
+      <span class="spacer" style="flex:1"></span>
+      <button class="ghost-btn" id="btnCloseMemoryModal" data-i18n="close">Close</button>
+    </div>
+  </div>
+</div>
+
 <div id="toasts"></div>
 
 <script>
@@ -1003,7 +1068,10 @@ var I18N = {
     filter_files_ph:"🔍 Filter workspace files...",
     recent_goals_label:"Recent Goals:",
     toggle_diffs:"↕ Toggle All",
-    autopilot_stopped_user:"Auto-Pilot stopped by user"
+    autopilot_stopped_user:"Auto-Pilot stopped by user",
+    memory_btn:"🧠 Memory (<span id='agentMemoryCount'>0</span>)",
+    attach_memory_chk:"🧠 Attach Memory",
+    memory_modal_title:"🧠 Project Memory Hub (Nexus Logic)"
   },
   fa: {
     app_tag:"ویرایش جراحیِ دقیق و عامل خودمختار برنامه‌نویسی",
@@ -1127,8 +1195,10 @@ var I18N = {
     filter_files_ph:"🔍 جستجو و فیلتر فایل‌های پروژه...",
     recent_goals_label:"هدف‌های اخیر:",
     toggle_diffs:"↕ تغییر نمایش همه",
-    autopilot_stopped_user:"اتوپایلوت توسط کاربر متوقف شد"
-  }
+    autopilot_stopped_user:"اتوپایلوت توسط کاربر متوقف شد",
+    memory_btn:"🧠 حافظه پروژه (<span id='agentMemoryCount'>0</span>)",
+    attach_memory_chk:"🧠 حافظه هوشمند",
+    memory_modal_title:"🧠 مدیریت حافظه پروژه (منطق Nexus)"
   }
 };
 
@@ -1710,6 +1780,12 @@ function refreshAgentState(dir){
       $("wsFilesBadge").textContent = fCount;
       $("agentBackupsCount").textContent = st.backups_count || 0;
       
+      api("/api/agent/memory?dir=" + encodeURIComponent(st.workspace_root))
+        .then(function(m){
+          var stmCount = (m.short_term || []).length;
+          $("agentMemoryCount").textContent = stmCount;
+        }).catch(function(){});
+      
       renderProjectDropdown(allProjects);
       renderQuickProjectsBar(allProjects);
     })
@@ -2067,6 +2143,168 @@ function submitImportSkill(){
   .catch(function(err){ toast(err.error || t("err"), "error", err.hint); });
 }
 
+/* ------------------------------------------------------------------ Memory Hub Subsystem */
+var currentMemoryData = null;
+
+function openMemoryModal(){
+  $("memoryModal").classList.remove("hidden");
+  switchMemoryTab("ltm");
+  loadMemoryHub();
+}
+
+function closeMemoryModal(){
+  $("memoryModal").classList.add("hidden");
+}
+
+function switchMemoryTab(tab){
+  $("tabMemLtm").className = "seg-btn" + (tab === "ltm" ? " active" : "");
+  $("tabMemStm").className = "seg-btn" + (tab === "stm" ? " active" : "");
+  $("tabMemSynth").className = "seg-btn" + (tab === "synth" ? " active" : "");
+  
+  $("memLtmBody").className = (tab === "ltm" ? "" : "hidden");
+  $("memStmBody").className = (tab === "stm" ? "" : "hidden");
+  $("memSynthBody").className = (tab === "synth" ? "" : "hidden");
+}
+
+function loadMemoryHub(){
+  var curDir = agentWorkspaceDir || $("agentDirPath").value.trim();
+  if (!curDir) return;
+  $("memoryWorkspaceLabel").textContent = curDir;
+  
+  api("/api/agent/memory?dir=" + encodeURIComponent(curDir))
+    .then(function(res){
+      currentMemoryData = res;
+      var stmCount = (res.short_term || []).length;
+      $("agentMemoryCount").textContent = stmCount;
+      $("memoryModalCountBadge").textContent = stmCount + " short-term event" + (stmCount === 1 ? "" : "s");
+      renderMemoryLtm(res);
+      renderMemoryStm(res.short_term || []);
+    })
+    .catch(function(err){
+      console.error("Error loading memory:", err);
+    });
+}
+
+function renderMemoryLtm(data){
+  var mdRender = $("memMdRender");
+  var jsonArea = $("memJsonContent");
+  var ltm = data.long_term || {};
+  jsonArea.value = JSON.stringify(ltm, null, 2);
+  
+  var html = "";
+  if (data.markdown_summary) {
+    var lines = data.markdown_summary.split("\n");
+    lines.forEach(function(l){
+      if (l.startsWith("### ")) {
+        html += '<h4 style="color:#d8b4fe;margin:10px 0 4px 0">' + esc(l.replace("### ", "")) + '</h4>';
+      } else if (l.startsWith("- ")) {
+        html += '<div style="padding-inline-start:12px;margin-bottom:3px;color:var(--text)">• ' + esc(l.slice(2)) + '</div>';
+      } else if (l.trim()) {
+        html += '<p style="margin:4px 0;color:var(--muted)">' + esc(l) + '</p>';
+      }
+    });
+  }
+  
+  if (!html.trim()) {
+    html = '<div class="empty">No long-term memory synthesized yet. Run "AI Memory Synthesis" or auto-pilot tasks to build persistent project knowledge.</div>';
+  }
+  mdRender.innerHTML = html;
+}
+
+function renderMemoryStm(events){
+  var list = $("memStmList");
+  list.innerHTML = "";
+  if (!events || !events.length) {
+    list.innerHTML = '<div class="empty">No recent short-term session events recorded.</div>';
+    return;
+  }
+  
+  events.slice().reverse().forEach(function(ev){
+    var item = el("div", "item");
+    var kind = ev.event || "action";
+    var icon = kind === "goal_completed" ? "✅" : (kind === "auto_pilot_error" ? "⚠️" : (kind === "user_action" ? "✍️" : "⚡"));
+    var title = el("b", null, icon + " " + (ev.event || "event"));
+    if (ev.round) title.appendChild(el("span", "chip agent", "R" + ev.round));
+    item.appendChild(title);
+    
+    if (ev.details) {
+      var d = el("div", "hint", typeof ev.details === "object" ? JSON.stringify(ev.details) : String(ev.details));
+      d.style.fontFamily = "var(--mono)";
+      d.style.fontSize = "11px";
+      d.style.marginTop = "2px";
+      item.appendChild(d);
+    }
+    list.appendChild(item);
+  });
+}
+
+function clearShortTermMemory(){
+  var curDir = agentWorkspaceDir || $("agentDirPath").value.trim();
+  if (!curDir) return;
+  api("/api/agent/memory/clear", { workspace_dir: curDir })
+    .then(function(){
+      toast("Short-term session memory cleared", "ok");
+      loadMemoryHub();
+    })
+    .catch(function(err){ toast(err.error || t("err"), "error"); });
+}
+
+function saveMemoryJson(){
+  var curDir = agentWorkspaceDir || $("agentDirPath").value.trim();
+  if (!curDir) return;
+  try {
+    var parsed = JSON.parse($("memJsonContent").value);
+    api("/api/agent/memory/save", { workspace_dir: curDir, memory: parsed })
+      .then(function(){
+        toast("Long-term memory JSON saved", "ok");
+        loadMemoryHub();
+      })
+      .catch(function(err){ toast(err.error || t("err"), "error"); });
+  } catch(e) {
+    toast("Invalid JSON: " + e.message, "error");
+  }
+}
+
+function runMemorySynthesis(){
+  var curDir = agentWorkspaceDir || $("agentDirPath").value.trim();
+  if (!curDir) { toast(t("need_file"), "warn"); return; }
+  
+  var provider = $("apProvider").value;
+  var model = $("apModel").value.trim();
+  var rawKey = $("apApiKey").value.trim();
+  var keysList = rawKey.split(/[\n,]+/).map(function(s){return s.trim();}).filter(Boolean);
+  var baseUrl = $("apBaseUrl").value.trim() || (provider === "ollama" ? "http://localhost:11434" : "");
+  var customPrompt = $("memSynthCustomPrompt").value.trim();
+  
+  var btn = $("btnRunMemSynthesis");
+  var status = $("memSynthStatus");
+  btn.disabled = true;
+  status.textContent = "Synthesizing with " + provider + "...";
+  
+  api("/api/agent/memory/synthesize", {
+    workspace_dir: curDir,
+    provider: provider,
+    model: model,
+    api_key: keysList[0] || "",
+    api_keys: keysList,
+    base_url: baseUrl,
+    custom_prompt: customPrompt
+  })
+  .then(function(res){
+    toast("Memory synthesis complete! MEMORY.md updated.", "ok");
+    status.textContent = "✓ Memory synthesized successfully";
+    switchMemoryTab("ltm");
+    loadMemoryHub();
+  })
+  .catch(function(err){
+    toast(err.error || t("err"), "error", err.hint);
+    status.textContent = "✖ " + (err.error || "Synthesis failed");
+  })
+  .then(function(){
+    btn.disabled = false;
+  });
+}
+
 /* ------------------------------------------------------------------ Auto-Pilot Multi-Key & Providers */
 function initAutoPilotProviders(){
   var savedProvider = localStorage.getItem("ts_ap_provider") || "ollama";
@@ -2113,7 +2351,7 @@ function updateProviderUI(){
     
     if (p === "openai") $("apModel").value = "gpt-4o";
     else if (p === "anthropic") $("apModel").value = "claude-3-5-sonnet-20241022";
-    else if (p === "gemini") $("apModel").value = "gemini-1.5-pro";
+    else if (p === "gemini") $("apModel").value = "gemini-3.1-flash-lite";
     else if (p === "groq") $("apModel").value = "llama-3.3-70b-versatile";
     else if (p === "deepseek") $("apModel").value = "deepseek-chat";
     else if (p === "openrouter") $("apModel").value = "anthropic/claude-3.5-sonnet";
@@ -2296,7 +2534,8 @@ function runAutoPilot(){
     base_url: baseUrl,
     max_rounds: maxRounds,
     skills: skillNames,
-    auto_detect_skills: autoDetect
+    auto_detect_skills: autoDetect,
+    include_memory: $("agentAttachMemory") ? $("agentAttachMemory").checked : true
   }, { signal: apAbortController.signal })
   .then(function(res){
     stopTaskProgress(res.success);
@@ -2500,6 +2739,7 @@ function generateAgentPrompt(){
     goal: goal,
     runtime: $("agentRuntime").value,
     include_files: $("agentIncludeFiles").checked,
+    include_memory: $("agentAttachMemory") ? $("agentAttachMemory").checked : true,
     skills: skillNames,
     auto_detect_skills: autoDetect
   })
@@ -2908,6 +3148,34 @@ $("btnOpenProjectsModal").onclick = openProjectsModal;
 $("btnCloseProjectsModal").onclick = closeProjectsModal;
 $("projectsModal").addEventListener("click", function(e){ if (e.target === $("projectsModal")) closeProjectsModal(); });
 
+/* Memory Modal Event Listeners */
+$("btnOpenMemoryModal").onclick = openMemoryModal;
+$("btnCloseMemoryModal").onclick = closeMemoryModal;
+$("memoryModal").addEventListener("click", function(e){ if (e.target === $("memoryModal")) closeMemoryModal(); });
+
+$("tabMemLtm").onclick = function(){ switchMemoryTab("ltm"); };
+$("tabMemStm").onclick = function(){ switchMemoryTab("stm"); };
+$("tabMemSynth").onclick = function(){ switchMemoryTab("synth"); };
+
+$("btnToggleMemRawJson").onclick = function(){
+  var jWrap = $("memJsonWrap");
+  var mWrap = $("memMdRender");
+  var isJson = !jWrap.classList.contains("hidden");
+  if (isJson) {
+    jWrap.classList.add("hidden");
+    mWrap.classList.remove("hidden");
+    $("btnToggleMemRawJson").textContent = "JSON View";
+  } else {
+    jWrap.classList.remove("hidden");
+    mWrap.classList.add("hidden");
+    $("btnToggleMemRawJson").textContent = "Markdown View";
+  }
+};
+
+$("btnSaveMemJson").onclick = saveMemoryJson;
+$("btnClearShortTermMem").onclick = clearShortTermMemory;
+$("btnRunMemSynthesis").onclick = runMemorySynthesis;
+
 /* Skills Modal Event Listeners */
 $("btnOpenSkillsModal").onclick = openSkillsModal;
 $("btnCloseSkillsModal").onclick = closeSkillsModal;
@@ -3021,6 +3289,7 @@ document.addEventListener("keydown", function(e){
       closeProjectsModal();
       closeBackupsModal();
       closeSkillsModal();
+      closeMemoryModal();
       closeEnvModal();
       closeFileEditor();
     }

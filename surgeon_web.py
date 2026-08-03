@@ -467,6 +467,8 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
                     return self._api_agent_skills_get()
                 if path == "/api/agent/keys/status":
                     return self._api_agent_keys_status()
+                if path == "/api/agent/memory":
+                    return self._api_agent_memory_get()
             else:
                 if path == "/api/generate":
                     return self._api_generate()
@@ -514,6 +516,12 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
                     return self._api_agent_install_packages()
                 if path == "/api/agent/keys/status":
                     return self._api_agent_keys_status()
+                if path == "/api/agent/memory/synthesize":
+                    return self._api_agent_memory_synthesize()
+                if path == "/api/agent/memory/clear":
+                    return self._api_agent_memory_clear()
+                if path == "/api/agent/memory/save":
+                    return self._api_agent_memory_save()
             self._send_json({"error": "Not found.", "kind": "request"}, 404)
 
         except agent.AgentError as exc:
@@ -864,7 +872,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
         self._send_json(result)
 
     def _api_agent_generate(self) -> None:
-        """POST /api/agent/generate {goal, dir/workspace_dir, runtime?, include_files?, skills?, auto_detect_skills?}."""
+        """POST /api/agent/generate {goal, dir/workspace_dir, runtime?, include_files?, include_memory?, skills?, auto_detect_skills?}."""
         data = self._read_json()
         goal = str(data.get("goal") or "").strip()
         if not goal:
@@ -873,6 +881,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
         workspace_dir = _resolve_path(raw_dir) if raw_dir else os.getcwd()
         runtime = str(data.get("runtime") or "python").strip()
         include_files = data.get("include_files", True) is not False
+        include_memory = data.get("include_memory", True) is not False
         skill_names = data.get("skills") or data.get("skill_names")
         auto_detect_skills = data.get("auto_detect_skills", True) is not False
 
@@ -881,6 +890,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
             workspace_root=workspace_dir,
             runtime=runtime,
             include_workspace_files=include_files,
+            include_memory=include_memory,
             skill_names=skill_names,
             auto_detect_skills=auto_detect_skills,
         )
@@ -894,6 +904,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
                 "dir": workspace_dir,
                 "workspace_dir": workspace_dir,
                 "runtime": runtime,
+                "include_memory": include_memory,
                 "skills": skill_names or [],
             }
         )
@@ -1306,6 +1317,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
         )
         runtime = str(data.get("runtime") or "python").strip()
         max_rounds = max(1, min(10, int(data.get("max_rounds") or 3)))
+        include_memory = data.get("include_memory", True) is not False
         skills = data.get("skills") or data.get("skill_names")
         auto_detect_skills = data.get("auto_detect_skills", True) is not False
 
@@ -1315,6 +1327,7 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
             llm_config=config,
             runtime=runtime,
             max_rounds=max_rounds,
+            include_memory=include_memory,
             skill_names=skills,
             auto_detect_skills=auto_detect_skills,
         )
@@ -1329,6 +1342,106 @@ class SurgeonRequestHandler(BaseHTTPRequestHandler):
             "final_artifacts": loop_res.get("final_artifacts", []),
             "result": loop_res,
             "workspace": scan,
+        })
+
+    def _api_agent_memory_get(self) -> None:
+        """GET /api/agent/memory?dir=... → returns Short-Term and Long-Term project memory."""
+        query = self._query()
+        raw_dir = query.get("dir", "").strip()
+        workspace_dir = _resolve_path(raw_dir) if raw_dir else os.getcwd()
+        mem_engine = agent.ProjectMemoryEngine(workspace_dir)
+        short_term = mem_engine.load_short_term()
+        long_term = mem_engine.load_long_term()
+        md_path = mem_engine.memory_md_file
+        md_text = ""
+        if os.path.isfile(md_path):
+            try:
+                with open(md_path, "r", encoding="utf-8") as fh:
+                    md_text = fh.read()
+            except OSError:
+                pass
+        self._send_json({
+            "workspace": workspace_dir,
+            "short_term": short_term,
+            "short_term_count": len(short_term),
+            "long_term": long_term,
+            "memory_md": md_text,
+        })
+
+    def _api_agent_memory_synthesize(self) -> None:
+        """POST /api/agent/memory/synthesize {dir, config, instructions?} → runs AI memory consolidation."""
+        data = self._read_json()
+        raw_dir = str(data.get("dir") or data.get("workspace_dir") or "").strip()
+        workspace_dir = _resolve_path(raw_dir) if raw_dir else os.getcwd()
+        cfg_dict = data.get("config") or {}
+        raw_keys = cfg_dict.get("api_keys") or []
+        if not raw_keys and cfg_dict.get("api_key"):
+            raw_keys = [cfg_dict.get("api_key")]
+        if isinstance(raw_keys, str):
+            raw_keys = agent.KeyManager.parse_keys(raw_keys)
+        config = agent.LLMConfig(
+            provider=str(cfg_dict.get("provider") or "ollama"),
+            model=str(cfg_dict.get("model") or "llama3"),
+            api_key=str(cfg_dict.get("api_key") or (raw_keys[0] if raw_keys else "")),
+            api_keys=list(raw_keys),
+            base_url=str(cfg_dict.get("base_url") or "http://localhost:11434"),
+            temperature=float(cfg_dict.get("temperature") or 0.2),
+            max_tokens=int(cfg_dict.get("max_tokens") or 4096),
+        )
+        custom_instructions = str(data.get("instructions") or data.get("custom_instructions") or "").strip()
+
+        mem_engine = agent.ProjectMemoryEngine(workspace_dir)
+        synthesized_ltm = mem_engine.synthesize_memory(config, custom_instructions=custom_instructions)
+        md_path = mem_engine.memory_md_file
+        md_text = ""
+        if os.path.isfile(md_path):
+            try:
+                with open(md_path, "r", encoding="utf-8") as fh:
+                    md_text = fh.read()
+            except OSError:
+                pass
+
+        self._send_json({
+            "success": True,
+            "workspace": workspace_dir,
+            "long_term": synthesized_ltm,
+            "memory_md": md_text,
+            "short_term_count": len(mem_engine.load_short_term()),
+        })
+
+    def _api_agent_memory_clear(self) -> None:
+        """POST /api/agent/memory/clear {dir, target?} → clears short-term memory buffer."""
+        data = self._read_json()
+        raw_dir = str(data.get("dir") or data.get("workspace_dir") or "").strip()
+        workspace_dir = _resolve_path(raw_dir) if raw_dir else os.getcwd()
+        target = str(data.get("target") or "short_term").strip()
+
+        mem_engine = agent.ProjectMemoryEngine(workspace_dir)
+        if target in ("short_term", "all"):
+            mem_engine.clear_short_term()
+        self._send_json({
+            "success": True,
+            "cleared": True,
+            "workspace": workspace_dir,
+            "short_term_count": len(mem_engine.load_short_term()),
+        })
+
+    def _api_agent_memory_save(self) -> None:
+        """POST /api/agent/memory/save {dir, long_term} → persists manual edits to long-term memory."""
+        data = self._read_json()
+        raw_dir = str(data.get("dir") or data.get("workspace_dir") or "").strip()
+        workspace_dir = _resolve_path(raw_dir) if raw_dir else os.getcwd()
+        ltm = data.get("long_term") or {}
+        if not isinstance(ltm, dict):
+            raise ValueError("Invalid long_term memory payload format.")
+
+        mem_engine = agent.ProjectMemoryEngine(workspace_dir)
+        mem_engine.save_long_term(ltm)
+        self._send_json({
+            "success": True,
+            "saved": True,
+            "workspace": workspace_dir,
+            "long_term": mem_engine.load_long_term(),
         })
 
     def _api_agent_skills_get(self) -> None:
