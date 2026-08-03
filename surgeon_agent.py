@@ -2055,7 +2055,7 @@ Your mission is to write complete, robust, ready-to-run code to achieve the user
 Your response must contain:
 1. An <EXPLANATION> section explaining your architecture, libraries chosen, and design.
 2. @@COMMAND lines for any packages/dependencies that need installation (e.g. `pip install python-pptx` or `npm install express`).
-3. @@FILE blocks for every file to create or rewrite.
+3. @@FILE blocks for creating new files or full rewrites, OR @@EDIT blocks for precision surgical in-place edits on existing files.
 4. @@RUN line indicating the exact command to execute to run the project or test.
 5. Optional @@ARTIFACT lines for expected deliverables (e.g. `presentation.pptx`, `index.html`).
 
@@ -2066,15 +2066,20 @@ Brief overview of your solution, dependencies, and file layout.
 </EXPLANATION>
 
 @@COMMAND pip install <package_name>
-@@COMMAND pip install <other_package>
 
-@@FILE path/to/file.py
+@@FILE path/to/new_file.py
 <<<
-# Full, complete, robust code here.
-# Real newlines, no escaping, no truncations or placeholders.
+# Full, complete code for new files or total rewrites.
 >>>
 
-@@RUN python path/to/file.py
+@@EDIT path/to/existing_file.py anchor
+START-ANCHOR: first 5-10 words of section to change
+END-ANCHOR: last 5-10 words of section to change
+<<<
+# Surgical in-place replacement for just this block.
+>>>
+
+@@RUN python path/to/main.py
 @@ARTIFACT output_file.pptx
 
 ### HARD CODING RULES:
